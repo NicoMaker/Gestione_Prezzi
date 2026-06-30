@@ -1,183 +1,250 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestione Attività &amp; Pagamenti</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div class="topbar no-print">
-  <div class="topbar-inner">
-    <div class="brand">
-      <span class="brand-logo">📋</span>
-      <div>
-        <h1>Gestione Attività</h1>
-        <span class="brand-sub">Attività &amp; pagamenti per cliente</span>
-      </div>
-    </div>
-    <div class="topbar-actions">
-      <button id="btnClienti" class="btn btn-outline">👥 Clienti</button>
-      <button id="btnStampa" class="btn btn-outline">🖨️ Stampa</button>
-      <button id="btnNuovo" class="btn btn-primary">+ Nuova attività</button>
-    </div>
-  </div>
-</div>
-
-<main class="container">
-
-  <!-- Riepilogo -->
-  <section class="cards no-print">
-    <div class="card card-tot">
-      <span class="card-label">Totale complessivo</span>
-      <span class="card-value" id="statTotale">€ 0,00</span>
-      <span class="card-sub" id="statTotaleNum">0 voci</span>
-    </div>
-    <div class="card card-pagato">
-      <span class="card-label">Pagato</span>
-      <span class="card-value" id="statPagato">€ 0,00</span>
-      <span class="card-sub" id="statPagatoNum">0 voci</span>
-    </div>
-    <div class="card card-dapagare">
-      <span class="card-label">Da pagare</span>
-      <span class="card-value" id="statDaPagare">€ 0,00</span>
-      <span class="card-sub" id="statDaPagareNum">0 voci</span>
-    </div>
-  </section>
-
-  <!-- Filtri -->
-  <section class="filters no-print">
-    <div class="filtro-group" id="filtroStato">
-      <button class="filtro-btn active" data-filtro="tutti">Tutti</button>
-      <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
-      <button class="filtro-btn" data-filtro="da_pagare">⏳ Da pagare</button>
-    </div>
-    <div class="combo" id="comboFiltroCliente">
-      <input type="text" class="combo-input" id="comboFiltroClienteInput" placeholder="👥 Tutti i clienti" autocomplete="off">
-      <input type="hidden" id="comboFiltroClienteValue" value="tutti">
-      <div class="combo-list hidden" id="comboFiltroClienteList"></div>
-    </div>
-    <input type="text" id="cercaInput" placeholder="🔎 Cerca per descrizione o nota..." class="search-input">
-  </section>
-
-  <!-- Intestazione stampa -->
-  <div class="print-header">
-    <h1>Riepilogo Attività e Pagamenti</h1>
-    <p id="printDate"></p>
-    <p id="printFiltro"></p>
-  </div>
-
-  <!-- Contenuto: tabelle raggruppate per cliente -->
-  <section id="contenitoreGruppi"></section>
-  <p id="vuoto" class="vuoto hidden">Nessuna attività trovata.</p>
-
-  <!-- Riepilogo del totale visualizzato (rispetta tutti i filtri attivi) -->
-  <section class="riepilogo-visualizzato" id="riepilogoVisualizzato">
-    <div class="riepilogo-voce riepilogo-tot">
-      <span class="riepilogo-dot"></span>
-      <span class="riepilogo-label">Totale visualizzato</span>
-      <span class="riepilogo-valore" id="footTotale">€ 0,00</span>
-      <span class="riepilogo-num" id="footTotaleNum">0 voci</span>
-    </div>
-    <div class="riepilogo-voce riepilogo-pagato">
-      <span class="riepilogo-dot"></span>
-      <span class="riepilogo-label">✅ Pagato</span>
-      <span class="riepilogo-valore" id="footPagato">€ 0,00</span>
-      <span class="riepilogo-num" id="footPagatoNum">0 voci</span>
-    </div>
-    <div class="riepilogo-voce riepilogo-dapagare">
-      <span class="riepilogo-dot"></span>
-      <span class="riepilogo-label">⏳ Da pagare</span>
-      <span class="riepilogo-valore" id="footDaPagare">€ 0,00</span>
-      <span class="riepilogo-num" id="footDaPagareNum">0 voci</span>
-    </div>
-  </section>
-
-</main>
-
-<!-- Modale Nuova/Modifica attività -->
-<div id="modalOverlay" class="modal-overlay hidden no-print">
-  <div class="modal">
-    <h2 id="modalTitolo">Nuova attività</h2>
-    <form id="formAttivita">
-      <input type="hidden" id="fId">
-
-      <label for="comboFormClienteInput">Cliente</label>
-      <div class="cliente-select-row">
-        <div class="combo" id="comboFormCliente">
-          <input type="text" class="combo-input" id="comboFormClienteInput" placeholder="Cerca o seleziona cliente..." autocomplete="off" required>
-          <input type="hidden" id="fCliente" value="">
-          <div class="combo-list hidden" id="comboFormClienteList"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestione Attività &amp; Pagamenti</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="topbar no-print">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span class="brand-logo">📋</span>
+          <div>
+            <h1>Gestione Attività</h1>
+            <span class="brand-sub">Attività &amp; pagamenti per cliente</span>
+          </div>
         </div>
-        <button type="button" id="btnNuovoClienteInline" class="btn btn-outline btn-small" title="Crea nuovo cliente">+ Nuovo</button>
+        <div class="topbar-actions">
+          <button id="btnClienti" class="btn btn-outline">👥 Clienti</button>
+          <button id="btnStampa" class="btn btn-outline">🖨️ Stampa</button>
+          <button id="btnNuovo" class="btn btn-primary">
+            + Nuova attività
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <main class="container">
+      <!-- Riepilogo -->
+      <section class="cards no-print">
+        <div class="card card-tot">
+          <span class="card-label">Totale complessivo</span>
+          <span class="card-value" id="statTotale">€ 0,00</span>
+          <span class="card-sub" id="statTotaleNum">0 voci</span>
+        </div>
+        <div class="card card-pagato">
+          <span class="card-label">Pagato</span>
+          <span class="card-value" id="statPagato">€ 0,00</span>
+          <span class="card-sub" id="statPagatoNum">0 voci</span>
+        </div>
+        <div class="card card-dapagare">
+          <span class="card-label">Da pagare</span>
+          <span class="card-value" id="statDaPagare">€ 0,00</span>
+          <span class="card-sub" id="statDaPagareNum">0 voci</span>
+        </div>
+      </section>
+
+      <!-- Filtri -->
+      <section class="filters no-print">
+        <div class="filtro-group" id="filtroStato">
+          <button class="filtro-btn active" data-filtro="tutti">Tutti</button>
+          <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
+          <button class="filtro-btn" data-filtro="da_pagare">
+            ⏳ Da pagare
+          </button>
+        </div>
+        <div class="combo" id="comboFiltroCliente">
+          <input
+            type="text"
+            class="combo-input"
+            id="comboFiltroClienteInput"
+            placeholder="👥 Tutti i clienti"
+            autocomplete="off"
+          />
+          <input type="hidden" id="comboFiltroClienteValue" value="tutti" />
+          <div class="combo-list hidden" id="comboFiltroClienteList"></div>
+        </div>
+        <input
+          type="text"
+          id="cercaInput"
+          placeholder="🔎 Cerca per descrizione o nota..."
+          class="search-input"
+        />
+      </section>
+
+      <!-- Intestazione stampa -->
+      <div class="print-header">
+        <h1>Riepilogo Attività e Pagamenti</h1>
+        <p id="printDate"></p>
+        <p id="printFiltro"></p>
       </div>
 
-      <label for="fData">Data</label>
-      <input type="date" id="fData" required>
+      <!-- Contenuto: tabelle raggruppate per cliente -->
+      <section id="contenitoreGruppi"></section>
+      <p id="vuoto" class="vuoto hidden">Nessuna attività trovata.</p>
 
-      <label for="fDescrizione">Attività realizzata</label>
-      <input type="text" id="fDescrizione" placeholder="Es. Gestione Magazzino" required>
+      <!-- Riepilogo del totale visualizzato (rispetta tutti i filtri attivi) -->
+      <section class="riepilogo-visualizzato" id="riepilogoVisualizzato">
+        <div class="riepilogo-voce riepilogo-tot">
+          <span class="riepilogo-dot"></span>
+          <span class="riepilogo-label">Totale visualizzato</span>
+          <span class="riepilogo-valore" id="footTotale">€ 0,00</span>
+          <span class="riepilogo-num" id="footTotaleNum">0 voci</span>
+        </div>
+        <div class="riepilogo-voce riepilogo-pagato">
+          <span class="riepilogo-dot"></span>
+          <span class="riepilogo-label">✅ Pagato</span>
+          <span class="riepilogo-valore" id="footPagato">€ 0,00</span>
+          <span class="riepilogo-num" id="footPagatoNum">0 voci</span>
+        </div>
+        <div class="riepilogo-voce riepilogo-dapagare">
+          <span class="riepilogo-dot"></span>
+          <span class="riepilogo-label">⏳ Da pagare</span>
+          <span class="riepilogo-valore" id="footDaPagare">€ 0,00</span>
+          <span class="riepilogo-num" id="footDaPagareNum">0 voci</span>
+        </div>
+      </section>
+    </main>
 
-      <label for="fImporto">Importo (€)</label>
-      <input type="text" id="fImporto" inputmode="decimal" placeholder="Es. 1.000,00" required>
-      <small class="hint">Usa il punto per le migliaia e la virgola per i decimali, es. <strong>1.000,00</strong> oppure <strong>50,00</strong></small>
+    <!-- Modale Nuova/Modifica attività -->
+    <div id="modalOverlay" class="modal-overlay hidden no-print">
+      <div class="modal">
+        <h2 id="modalTitolo">Nuova attività</h2>
+        <form id="formAttivita">
+          <input type="hidden" id="fId" />
 
-      <label for="fNote">Note (facoltative)</label>
-      <textarea id="fNote" rows="2" placeholder="Note aggiuntive..."></textarea>
+          <label for="comboFormClienteInput">Cliente</label>
+          <div class="cliente-select-row">
+            <div class="combo" id="comboFormCliente">
+              <input
+                type="text"
+                class="combo-input"
+                id="comboFormClienteInput"
+                placeholder="Cerca o seleziona cliente..."
+                autocomplete="off"
+                required
+              />
+              <input type="hidden" id="fCliente" value="" />
+              <div class="combo-list hidden" id="comboFormClienteList"></div>
+            </div>
+            <button
+              type="button"
+              id="btnNuovoClienteInline"
+              class="btn btn-outline btn-small"
+              title="Crea nuovo cliente"
+            >
+              + Nuovo
+            </button>
+          </div>
 
-      <label class="checkbox-label">
-        <input type="checkbox" id="fPagato">
-        Pagato
-      </label>
+          <label for="fData">Data</label>
+          <input type="date" id="fData" required />
 
-      <div class="modal-actions">
-        <button type="button" id="btnAnnulla" class="btn btn-outline">Annulla</button>
-        <button type="submit" class="btn btn-primary">Salva</button>
+          <label for="fDescrizione">Attività realizzata</label>
+          <input
+            type="text"
+            id="fDescrizione"
+            placeholder="Es. Gestione Magazzino"
+            required
+          />
+
+          <label for="fImporto">Importo (€)</label>
+          <input
+            type="text"
+            id="fImporto"
+            inputmode="decimal"
+            placeholder="Es. 1.000,00"
+            required
+          />
+          <small class="hint"
+            >Usa il punto per le migliaia e la virgola per i decimali, es.
+            <strong>1.000,00</strong> oppure <strong>50,00</strong></small
+          >
+
+          <label for="fNote">Note (facoltative)</label>
+          <textarea
+            id="fNote"
+            rows="2"
+            placeholder="Note aggiuntive..."
+          ></textarea>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="fPagato" />
+            Pagato
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" id="btnAnnulla" class="btn btn-outline">
+              Annulla
+            </button>
+            <button type="submit" class="btn btn-primary">Salva</button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
-
-<!-- Modale conferma eliminazione -->
-<div id="confirmOverlay" class="modal-overlay hidden no-print">
-  <div class="modal modal-small">
-    <h2>Eliminare questa attività?</h2>
-    <p>L'operazione è definitiva e non è reversibile.</p>
-    <div class="modal-actions">
-      <button id="btnAnnullaElimina" class="btn btn-outline">Annulla</button>
-      <button id="btnConfermaElimina" class="btn btn-danger">Elimina</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modale Gestione Clienti -->
-<div id="clientiOverlay" class="modal-overlay hidden no-print">
-  <div class="modal modal-large">
-    <div class="modal-header-row">
-      <h2>👥 Gestione clienti</h2>
     </div>
 
-    <form id="formClienteNuovo" class="cliente-form-nuovo">
-      <input type="text" id="fNuovoClienteNome" placeholder="Nome nuovo cliente" required>
-      <button type="submit" class="btn btn-primary btn-small">+ Aggiungi</button>
-    </form>
-
-    <input type="text" id="cercaClienteGestione" class="search-input-full" placeholder="🔎 Cerca cliente...">
-
-    <div id="clientiLista" class="clienti-lista"></div>
-    <p id="clientiVuoto" class="vuoto hidden">Nessun cliente creato. Aggiungine uno qui sopra.</p>
-
-    <div class="modal-actions">
-      <button id="btnChiudiClienti" class="btn btn-outline">Chiudi</button>
+    <!-- Modale conferma eliminazione -->
+    <div id="confirmOverlay" class="modal-overlay hidden no-print">
+      <div class="modal modal-small">
+        <h2>Eliminare questa attività?</h2>
+        <p>L'operazione è definitiva e non è reversibile.</p>
+        <div class="modal-actions">
+          <button id="btnAnnullaElimina" class="btn btn-outline">
+            Annulla
+          </button>
+          <button id="btnConfermaElimina" class="btn btn-danger">
+            Elimina
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<div id="toast" class="toast hidden"></div>
+    <!-- Modale Gestione Clienti -->
+    <div id="clientiOverlay" class="modal-overlay hidden no-print">
+      <div class="modal modal-large">
+        <div class="modal-header-row">
+          <h2>👥 Gestione clienti</h2>
+        </div>
 
-<script src="app.js"></script>
-</body>
+        <form id="formClienteNuovo" class="cliente-form-nuovo">
+          <input
+            type="text"
+            id="fNuovoClienteNome"
+            placeholder="Nome nuovo cliente"
+            required
+          />
+          <button type="submit" class="btn btn-primary btn-small">
+            + Aggiungi
+          </button>
+        </form>
+
+        <input
+          type="text"
+          id="cercaClienteGestione"
+          class="search-input-full"
+          placeholder="🔎 Cerca cliente..."
+        />
+
+        <div id="clientiLista" class="clienti-lista"></div>
+        <p id="clientiVuoto" class="vuoto hidden">
+          Nessun cliente creato. Aggiungine uno qui sopra.
+        </p>
+
+        <div class="modal-actions">
+          <button id="btnChiudiClienti" class="btn btn-outline">Chiudi</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+  </body>
 </html>

@@ -1,11 +1,11 @@
-const path = require('path');
-const fs = require('fs');
-const { DatabaseSync } = require('node:sqlite');
+const path = require("path");
+const fs = require("fs");
+const { DatabaseSync } = require("node:sqlite");
 
-const DB_PATH = path.join(__dirname, 'data', 'gestione.db');
+const DB_PATH = path.join(__dirname, "data", "gestione.db");
 
-if (!fs.existsSync(path.join(__dirname, 'data'))) {
-  fs.mkdirSync(path.join(__dirname, 'data'));
+if (!fs.existsSync(path.join(__dirname, "data"))) {
+  fs.mkdirSync(path.join(__dirname, "data"));
 }
 
 const db = new DatabaseSync(DB_PATH);
@@ -34,9 +34,14 @@ db.exec(`
 `);
 
 // Migrazioni per database gia' esistenti
-const colonneAttivita = db.prepare("PRAGMA table_info(attivita)").all().map(c => c.name);
-if (!colonneAttivita.includes('cliente_id')) {
-  db.exec(`ALTER TABLE attivita ADD COLUMN cliente_id INTEGER REFERENCES clienti(id)`);
+const colonneAttivita = db
+  .prepare("PRAGMA table_info(attivita)")
+  .all()
+  .map((c) => c.name);
+if (!colonneAttivita.includes("cliente_id")) {
+  db.exec(
+    `ALTER TABLE attivita ADD COLUMN cliente_id INTEGER REFERENCES clienti(id)`,
+  );
 }
 
 module.exports = db;
