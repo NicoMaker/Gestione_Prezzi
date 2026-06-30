@@ -1,14 +1,14 @@
-const path = require('path')
-const fs = require('fs')
-const { DatabaseSync } = require('node:sqlite')
+const path = require("path");
+const fs = require("fs");
+const { DatabaseSync } = require("node:sqlite");
 
-const DB_PATH = path.join(__dirname, 'data', 'gestione.db')
+const DB_PATH = path.join(__dirname, "data", "gestione.db");
 
-if (!fs.existsSync(path.join(__dirname, 'data'))) {
-  fs.mkdirSync(path.join(__dirname, 'data'))
+if (!fs.existsSync(path.join(__dirname, "data"))) {
+  fs.mkdirSync(path.join(__dirname, "data"));
 }
 
-const db = new DatabaseSync(DB_PATH)
+const db = new DatabaseSync(DB_PATH);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS clienti (
@@ -16,7 +16,7 @@ db.exec(`
     nome TEXT NOT NULL UNIQUE,
     creato_il TEXT DEFAULT (datetime('now', 'localtime'))
   );
-`)
+`);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS attivita (
@@ -31,17 +31,17 @@ db.exec(`
     aggiornato_il TEXT DEFAULT (datetime('now', 'localtime')),
     FOREIGN KEY (cliente_id) REFERENCES clienti(id)
   );
-`)
+`);
 
 // Migrazioni per database gia' esistenti
 const colonneAttivita = db
-  .prepare('PRAGMA table_info(attivita)')
+  .prepare("PRAGMA table_info(attivita)")
   .all()
-  .map(c => c.name)
-if (!colonneAttivita.includes('cliente_id')) {
+  .map((c) => c.name);
+if (!colonneAttivita.includes("cliente_id")) {
   db.exec(
-    `ALTER TABLE attivita ADD COLUMN cliente_id INTEGER REFERENCES clienti(id)`
-  )
+    `ALTER TABLE attivita ADD COLUMN cliente_id INTEGER REFERENCES clienti(id)`,
+  );
 }
 
-module.exports = db
+module.exports = db;
