@@ -17,7 +17,6 @@ function rowToObj(row) {
     id: row.id,
     cliente_id: row.cliente_id || null,
     cliente_nome: row.cliente_nome || null,
-    cliente_colore: row.cliente_colore || null,
     data: row.data,
     descrizione: row.descrizione,
     importo: row.importo,
@@ -29,7 +28,7 @@ function rowToObj(row) {
 }
 
 const SELECT_BASE = `
-  SELECT a.*, c.nome AS cliente_nome, c.colore AS cliente_colore
+  SELECT a.*, c.nome AS cliente_nome
   FROM attivita a
   LEFT JOIN clienti c ON c.id = a.cliente_id
 `;
@@ -46,11 +45,11 @@ app.get('/api/clienti', (req, res) => {
 });
 
 app.post('/api/clienti', (req, res) => {
-  const { nome, colore } = req.body;
+  const { nome } = req.body;
   if (!nome || !nome.trim()) return res.status(400).json({ errore: 'Il nome cliente è obbligatorio' });
   try {
-    const stmt = db.prepare(`INSERT INTO clienti (nome, colore) VALUES (?, ?)`);
-    const result = stmt.run(nome.trim(), colore || '#2563eb');
+    const stmt = db.prepare(`INSERT INTO clienti (nome) VALUES (?)`);
+    const result = stmt.run(nome.trim());
     const newRow = db.prepare('SELECT * FROM clienti WHERE id = ?').get(result.lastInsertRowid);
     res.status(201).json(newRow);
   } catch (err) {
@@ -66,9 +65,8 @@ app.put('/api/clienti/:id', (req, res) => {
   const existing = db.prepare('SELECT * FROM clienti WHERE id = ?').get(id);
   if (!existing) return res.status(404).json({ errore: 'Cliente non trovato' });
   const nome = req.body.nome !== undefined ? req.body.nome.trim() : existing.nome;
-  const colore = req.body.colore !== undefined ? req.body.colore : existing.colore;
   try {
-    db.prepare(`UPDATE clienti SET nome = ?, colore = ? WHERE id = ?`).run(nome, colore, id);
+    db.prepare(`UPDATE clienti SET nome = ? WHERE id = ?`).run(nome, id);
     res.json(db.prepare('SELECT * FROM clienti WHERE id = ?').get(id));
   } catch (err) {
     res.status(400).json({ errore: 'Esiste già un cliente con questo nome' });

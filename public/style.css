@@ -139,16 +139,52 @@ body {
 }
 .filtro-btn.active { background: var(--blue); color: #fff; }
 
-.select-cliente, .search-input {
+.combo { position: relative; min-width: 200px; }
+.combo-input {
   padding: 9px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   font-size: 0.88rem;
   font-family: inherit;
   background: #fff;
+  width: 100%;
 }
-.select-cliente { min-width: 180px; cursor: pointer; }
+.combo-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 50;
+  padding: 4px;
+}
+.combo-item {
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+.combo-item:hover { background: var(--blue-light); }
+.combo-item.selezionato { background: var(--blue-light); color: var(--blue-dark); font-weight: 700; }
+.combo-item-vuoto { color: var(--text-muted); cursor: default; font-weight: 500; }
+.combo-item-vuoto:hover { background: none; }
+
 .search-input { margin-left: auto; min-width: 240px; }
+.search-input-full {
+  width: 100%;
+  margin-top: 12px;
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.88rem;
+  font-family: inherit;
+}
 
 /* ---------- Gruppi cliente ---------- */
 .gruppo-cliente { margin-bottom: 24px; }
@@ -157,12 +193,6 @@ body {
   align-items: center;
   gap: 10px;
   padding: 10px 4px;
-}
-.gruppo-pallino {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  background: var(--colore-cliente, var(--blue));
-  flex-shrink: 0;
 }
 .gruppo-header h3 { margin: 0; font-size: 1.05rem; font-weight: 700; }
 .gruppo-conteggio { font-size: 0.78rem; color: var(--text-muted); background: #f1f2f6; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
@@ -341,7 +371,6 @@ tbody tr.riga-da-pagare { background: rgba(217,119,6,0.03); }
   border-radius: var(--radius-sm);
   padding: 9px 12px;
 }
-.cliente-pallino { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 .cliente-nome-input {
   flex: 1;
   border: 1px solid transparent;
@@ -353,7 +382,6 @@ tbody tr.riga-da-pagare { background: rgba(217,119,6,0.03); }
   font-family: inherit;
 }
 .cliente-nome-input:hover, .cliente-nome-input:focus { border-color: var(--border); background: #fff; outline: none; }
-.cliente-colore-input { width: 30px; height: 30px; border: none; border-radius: 6px; cursor: pointer; padding: 0; flex-shrink: 0; }
 .cliente-num { font-size: 0.76rem; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
 
 .print-header { display: none; }

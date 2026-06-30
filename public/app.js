@@ -17,12 +17,8 @@ function parseImportoIT(str) {
   if (str === null || str === undefined) return NaN;
   let s = String(str).trim();
   if (s === '') return NaN;
-
-  if (s.includes('.') && s.includes(',')) {
-    s = s.replace(/\./g, '').replace(',', '.');
-  } else if (s.includes(',')) {
-    s = s.replace(',', '.');
-  }
+  // A questo punto il campo contiene solo cifre, punti (migliaia) ed eventualmente una virgola (decimali)
+  s = s.replace(/\./g, '').replace(',', '.');
   return parseFloat(s);
 }
 
@@ -54,34 +50,129 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// ---------- Formattazione live dell'importo mentre si scrive ----------
+// Accetta solo cifre ed eventualmente UNA virgola per i decimali.
+// Mentre si digita "1000" diventa subito "1.000", "1000000" diventa "1.000.000".
+function formattaImportoLive(raw) {
+  let s = String(raw).replace(/[^0-9,]/g, '');
+
+  // Tiene solo la prima virgola digitata
+  const primaVirgola = s.indexOf(',');
+  if (primaVirgola !== -1) {
+    s = s.slice(0, primaVirgola + 1) + s.slice(primaVirgola + 1).replace(/,/g, '');
+  }
+
+  let [intPart, decPart] = s.split(',');
+  intPart = intPart || '';
+  // Rimuove zeri iniziali superflui (ma non se è l'unica cifra)
+  intPart = intPart.replace(/^0+(?=\d)/, '');
+  const intFormattata = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  if (decPart !== undefined) {
+    decPart = decPart.slice(0, 2); // massimo 2 decimali
+    return intFormattata + ',' + decPart;
+  }
+  return intFormattata;
+}
+
+function collegaImportoLive(input) {
+  input.addEventListener('input', () => {
+    const valorePrecedente = input.value;
+    const cursorDaFine = valorePrecedente.length - input.selectionStart;
+    const nuovoValore = formattaImportoLive(valorePrecedente);
+    input.value = nuovoValore;
+    const nuovaPosizione = Math.max(0, nuovoValore.length - cursorDaFine);
+    input.setSelectionRange(nuovaPosizione, nuovaPosizione);
+  });
+  input.addEventListener('blur', () => {
+    const valore = parseImportoIT(input.value);
+    if (!isNaN(valore)) {
+      input.value = formattaImportoInput(valore);
+    }
+  });
+}
+
+// ---------- Componente combobox cercabile per i clienti ----------
+// container: div.combo con dentro input.combo-input, input hidden e div.combo-list
+function creaComboCliente(containerId, inputId, hiddenId, listId, { opzioneTutti = false, onChange = null } = {}) {
+  const container = document.getElementById(containerId);
+  const input = document.getElementById(inputId);
+  const hidden = document.getElementById(hiddenId);
+  const lista = document.getElementById(listId);
+
+  function opzioni() {
+    const arr = clientiCorrenti.map(c => ({ id: String(c.id), nome: c.nome }));
+    if (opzioneTutti) arr.unshift({ id: 'tutti', nome: 'Tutti i clienti' });
+    return arr;
+  }
+
+  function renderLista(filtro) {
+    const q = (filtro || '').trim().toLowerCase();
+    const filtrate = opzioni().filter(o => o.nome.toLowerCase().includes(q));
+    lista.innerHTML = '';
+    if (filtrate.length === 0) {
+      lista.innerHTML = '<div class="combo-item combo-item-vuoto">Nessun cliente trovato</div>';
+    } else {
+      for (const o of filtrate) {
+        const div = document.createElement('div');
+        div.className = 'combo-item';
+        div.textContent = o.nome;
+        div.dataset.id = o.id;
+        if (String(hidden.value) === o.id) div.classList.add('selezionato');
+        div.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          selezionaValore(o.id, o.nome);
+        });
+        lista.appendChild(div);
+      }
+    }
+    lista.classList.remove('hidden');
+  }
+
+  function selezionaValore(id, nome) {
+    hidden.value = id;
+    input.value = id === 'tutti' ? '' : nome;
+    lista.classList.add('hidden');
+    if (onChange) onChange(id);
+  }
+
+  input.addEventListener('focus', () => renderLista(''));
+  input.addEventListener('input', () => renderLista(input.value));
+  input.addEventListener('blur', () => {
+    // Se il testo digitato non corrisponde a nessun cliente selezionato, ripristina l'etichetta corrente
+    setTimeout(() => {
+      lista.classList.add('hidden');
+      const corrente = opzioni().find(o => o.id === String(hidden.value));
+      input.value = corrente ? (corrente.id === 'tutti' ? '' : corrente.nome) : '';
+    }, 120);
+  });
+  document.addEventListener('click', (e) => {
+    if (!container.contains(e.target)) lista.classList.add('hidden');
+  });
+
+  return {
+    setValore(id) {
+      const corrente = opzioni().find(o => o.id === String(id));
+      hidden.value = id || (opzioneTutti ? 'tutti' : '');
+      input.value = corrente ? (corrente.id === 'tutti' ? '' : corrente.nome) : '';
+    },
+    refresh() {
+      const idAttuale = hidden.value;
+      const corrente = opzioni().find(o => o.id === String(idAttuale));
+      input.value = corrente ? (corrente.id === 'tutti' ? '' : corrente.nome) : input.value;
+    },
+    getValore() { return hidden.value; },
+  };
+}
+
+let comboFiltroCliente, comboFormCliente;
+
 // ---------- Caricamento clienti ----------
 async function caricaClienti() {
   const res = await fetch(CLIENTI_API);
   clientiCorrenti = await res.json();
-
-  // Popola select filtro
-  const selFiltro = document.getElementById('filtroCliente');
-  const valorePrecedente = selFiltro.value || 'tutti';
-  selFiltro.innerHTML = '<option value="tutti">👥 Tutti i clienti</option>';
-  for (const c of clientiCorrenti) {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = `${c.nome} (${c.num_attivita})`;
-    selFiltro.appendChild(opt);
-  }
-  selFiltro.value = clientiCorrenti.some(c => String(c.id) === String(valorePrecedente)) ? valorePrecedente : 'tutti';
-
-  // Popola select form
-  const selForm = document.getElementById('fCliente');
-  const valoreForm = selForm.value;
-  selForm.innerHTML = '<option value="">Seleziona cliente...</option>';
-  for (const c of clientiCorrenti) {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.nome;
-    selForm.appendChild(opt);
-  }
-  if (valoreForm) selForm.value = valoreForm;
+  if (comboFiltroCliente) comboFiltroCliente.refresh();
+  if (comboFormCliente) comboFormCliente.refresh();
 }
 
 // ---------- Caricamento dati ----------
@@ -121,7 +212,6 @@ function aggiornaTotaleVisualizzato(dati) {
   document.getElementById('footTotale').textContent = formattaEuro(somma);
 }
 
-// Raggruppa le righe per cliente (cliente "Senza cliente" per quelle non assegnate)
 function raggruppaPerCliente(dati) {
   const gruppi = new Map();
   for (const riga of dati) {
@@ -129,13 +219,11 @@ function raggruppaPerCliente(dati) {
     if (!gruppi.has(chiave)) {
       gruppi.set(chiave, {
         nome: riga.cliente_nome || 'Senza cliente',
-        colore: riga.cliente_colore || '#94a3b8',
         righe: [],
       });
     }
     gruppi.get(chiave).righe.push(riga);
   }
-  // Ordina i gruppi per nome cliente
   return [...gruppi.entries()].sort((a, b) => a[1].nome.localeCompare(b[1].nome, 'it'));
 }
 
@@ -156,8 +244,7 @@ function renderGruppi(dati) {
     const sezione = document.createElement('section');
     sezione.className = 'gruppo-cliente';
     sezione.innerHTML = `
-      <div class="gruppo-header" style="--colore-cliente: ${gruppo.colore}">
-        <span class="gruppo-pallino"></span>
+      <div class="gruppo-header">
         <h3>${escapeHtml(gruppo.nome)}</h3>
         <span class="gruppo-conteggio">${gruppo.righe.length} attività</span>
         <span class="gruppo-totale">${formattaEuro(sommaGruppo)}</span>
@@ -243,11 +330,6 @@ document.getElementById('filtroStato').addEventListener('click', (e) => {
   caricaTabella();
 });
 
-document.getElementById('filtroCliente').addEventListener('change', (e) => {
-  filtroClienteId = e.target.value;
-  aggiornaTutto();
-});
-
 document.getElementById('cercaInput').addEventListener('input', (e) => {
   testoCerca = e.target.value;
   caricaTabella();
@@ -257,18 +339,12 @@ document.getElementById('cercaInput').addEventListener('input', (e) => {
 const modalOverlay = document.getElementById('modalOverlay');
 const form = document.getElementById('formAttivita');
 const fImporto = document.getElementById('fImporto');
-const fCliente = document.getElementById('fCliente');
 
 document.getElementById('btnNuovo').addEventListener('click', () => apriModaleNuovo());
 document.getElementById('btnAnnulla').addEventListener('click', chiudiModale);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) chiudiModale(); });
 
-fImporto.addEventListener('blur', () => {
-  const valore = parseImportoIT(fImporto.value);
-  if (!isNaN(valore)) {
-    fImporto.value = formattaImportoInput(valore);
-  }
-});
+collegaImportoLive(fImporto);
 
 document.getElementById('btnNuovoClienteInline').addEventListener('click', () => {
   apriClienti(true);
@@ -279,7 +355,11 @@ function apriModaleNuovo() {
   form.reset();
   document.getElementById('fId').value = '';
   document.getElementById('fData').value = new Date().toISOString().slice(0, 10);
-  if (filtroClienteId !== 'tutti') fCliente.value = filtroClienteId;
+  if (filtroClienteId !== 'tutti') {
+    comboFormCliente.setValore(filtroClienteId);
+  } else {
+    comboFormCliente.setValore('');
+  }
   modalOverlay.classList.remove('hidden');
   document.getElementById('fDescrizione').focus();
 }
@@ -289,7 +369,7 @@ function apriModaleModifica(id) {
   if (!riga) return;
   document.getElementById('modalTitolo').textContent = 'Modifica attività';
   document.getElementById('fId').value = riga.id;
-  fCliente.value = riga.cliente_id || '';
+  comboFormCliente.setValore(riga.cliente_id || '');
   document.getElementById('fData').value = riga.data;
   document.getElementById('fDescrizione').value = riga.descrizione;
   fImporto.value = formattaImportoInput(riga.importo);
@@ -312,14 +392,15 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  if (!fCliente.value) {
+  const clienteId = comboFormCliente.getValore();
+  if (!clienteId) {
     mostraToast('⚠️ Seleziona un cliente');
     return;
   }
 
   const id = document.getElementById('fId').value;
   const payload = {
-    cliente_id: Number(fCliente.value),
+    cliente_id: Number(clienteId),
     data: document.getElementById('fData').value,
     descrizione: document.getElementById('fDescrizione').value.trim(),
     importo: importoNumerico,
@@ -380,6 +461,7 @@ const clientiOverlay = document.getElementById('clientiOverlay');
 const clientiLista = document.getElementById('clientiLista');
 const clientiVuoto = document.getElementById('clientiVuoto');
 const formClienteNuovo = document.getElementById('formClienteNuovo');
+const cercaClienteGestione = document.getElementById('cercaClienteGestione');
 
 document.getElementById('btnClienti').addEventListener('click', () => apriClienti(false));
 document.getElementById('btnChiudiClienti').addEventListener('click', () => clientiOverlay.classList.add('hidden'));
@@ -387,27 +469,32 @@ clientiOverlay.addEventListener('click', (e) => { if (e.target === clientiOverla
 
 async function apriClienti(focusNuovo) {
   clientiOverlay.classList.remove('hidden');
+  cercaClienteGestione.value = '';
   await renderClientiLista();
   if (focusNuovo) document.getElementById('fNuovoClienteNome').focus();
 }
 
 async function renderClientiLista() {
   await caricaClienti();
+  const q = cercaClienteGestione.value.trim().toLowerCase();
+  const filtrati = clientiCorrenti.filter(c => c.nome.toLowerCase().includes(q));
+
   clientiLista.innerHTML = '';
-  if (clientiCorrenti.length === 0) {
+  if (filtrati.length === 0) {
     clientiVuoto.classList.remove('hidden');
+    clientiVuoto.textContent = clientiCorrenti.length === 0
+      ? 'Nessun cliente creato. Aggiungine uno qui sopra.'
+      : 'Nessun cliente trovato con questo nome.';
     return;
   }
   clientiVuoto.classList.add('hidden');
 
-  for (const c of clientiCorrenti) {
+  for (const c of filtrati) {
     const div = document.createElement('div');
     div.className = 'cliente-item';
     const haAttivita = c.num_attivita > 0;
     div.innerHTML = `
-      <span class="cliente-pallino" style="background:${c.colore}"></span>
       <input type="text" class="cliente-nome-input" data-id="${c.id}" value="${escapeHtml(c.nome)}">
-      <input type="color" class="cliente-colore-input" data-id="${c.id}" value="${c.colore}">
       <span class="cliente-num">${c.num_attivita} attività</span>
       <button class="icon-btn ${haAttivita ? 'icon-btn-disabled' : ''}" data-elimina-cliente="${c.id}" title="${haAttivita ? 'Non eliminabile: ha attività collegate' : 'Elimina cliente'}">🗑️</button>
     `;
@@ -415,21 +502,21 @@ async function renderClientiLista() {
   }
 }
 
+cercaClienteGestione.addEventListener('input', () => renderClientiLista());
+
 formClienteNuovo.addEventListener('submit', async (e) => {
   e.preventDefault();
   const nome = document.getElementById('fNuovoClienteNome').value.trim();
-  const colore = document.getElementById('fNuovoClienteColore').value;
   if (!nome) return;
 
   const res = await fetch(CLIENTI_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, colore }),
+    body: JSON.stringify({ nome }),
   });
   if (res.ok) {
     mostraToast('Cliente creato');
     formClienteNuovo.reset();
-    document.getElementById('fNuovoClienteColore').value = '#2563eb';
     await renderClientiLista();
   } else {
     const err = await res.json();
@@ -439,7 +526,6 @@ formClienteNuovo.addEventListener('submit', async (e) => {
 
 clientiLista.addEventListener('change', async (e) => {
   const nomeInput = e.target.closest('.cliente-nome-input');
-  const coloreInput = e.target.closest('.cliente-colore-input');
   if (nomeInput) {
     await fetch(`${CLIENTI_API}/${nomeInput.dataset.id}`, {
       method: 'PUT',
@@ -448,15 +534,6 @@ clientiLista.addEventListener('change', async (e) => {
     });
     mostraToast('Cliente aggiornato');
     await caricaClienti();
-    caricaTabella();
-  }
-  if (coloreInput) {
-    await fetch(`${CLIENTI_API}/${coloreInput.dataset.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ colore: coloreInput.value }),
-    });
-    await renderClientiLista();
     caricaTabella();
   }
 });
@@ -495,6 +572,17 @@ document.getElementById('btnStampa').addEventListener('click', () => {
 
 // ---------- Avvio ----------
 (async function init() {
+  comboFiltroCliente = creaComboCliente('comboFiltroCliente', 'comboFiltroClienteInput', 'comboFiltroClienteValue', 'comboFiltroClienteList', {
+    opzioneTutti: true,
+    onChange(id) {
+      filtroClienteId = id;
+      aggiornaTutto();
+    },
+  });
+  comboFormCliente = creaComboCliente('comboFormCliente', 'comboFormClienteInput', 'fCliente', 'comboFormClienteList', {
+    opzioneTutti: false,
+  });
+
   await caricaClienti();
   await aggiornaTutto();
 })();

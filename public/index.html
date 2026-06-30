@@ -55,9 +55,11 @@
       <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
       <button class="filtro-btn" data-filtro="da_pagare">⏳ Da pagare</button>
     </div>
-    <select id="filtroCliente" class="select-cliente">
-      <option value="tutti">👥 Tutti i clienti</option>
-    </select>
+    <div class="combo" id="comboFiltroCliente">
+      <input type="text" class="combo-input" id="comboFiltroClienteInput" placeholder="👥 Tutti i clienti" autocomplete="off">
+      <input type="hidden" id="comboFiltroClienteValue" value="tutti">
+      <div class="combo-list hidden" id="comboFiltroClienteList"></div>
+    </div>
     <input type="text" id="cercaInput" placeholder="🔎 Cerca per descrizione o nota..." class="search-input">
   </section>
 
@@ -87,11 +89,13 @@
     <form id="formAttivita">
       <input type="hidden" id="fId">
 
-      <label for="fCliente">Cliente</label>
+      <label for="comboFormClienteInput">Cliente</label>
       <div class="cliente-select-row">
-        <select id="fCliente" required>
-          <option value="">Seleziona cliente...</option>
-        </select>
+        <div class="combo" id="comboFormCliente">
+          <input type="text" class="combo-input" id="comboFormClienteInput" placeholder="Cerca o seleziona cliente..." autocomplete="off" required>
+          <input type="hidden" id="fCliente" value="">
+          <div class="combo-list hidden" id="comboFormClienteList"></div>
+        </div>
         <button type="button" id="btnNuovoClienteInline" class="btn btn-outline btn-small" title="Crea nuovo cliente">+ Nuovo</button>
       </div>
 
@@ -142,9 +146,10 @@
 
     <form id="formClienteNuovo" class="cliente-form-nuovo">
       <input type="text" id="fNuovoClienteNome" placeholder="Nome nuovo cliente" required>
-      <input type="color" id="fNuovoClienteColore" value="#2563eb" title="Colore identificativo">
       <button type="submit" class="btn btn-primary btn-small">+ Aggiungi</button>
     </form>
+
+    <input type="text" id="cercaClienteGestione" class="search-input-full" placeholder="🔎 Cerca cliente...">
 
     <div id="clientiLista" class="clienti-lista"></div>
     <p id="clientiVuoto" class="vuoto hidden">Nessun cliente creato. Aggiungine uno qui sopra.</p>

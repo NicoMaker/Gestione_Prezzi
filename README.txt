@@ -1,5 +1,5 @@
-GESTIONE ATTIVITA' & PAGAMENTI - v3 (clienti, senza cestino)
-===============================================================
+GESTIONE ATTIVITA' & PAGAMENTI - v4
+=====================================
 
 INSTALLAZIONE:
 1. Estrai lo zip in una cartella
@@ -9,14 +9,17 @@ INSTALLAZIONE:
 5. Apri il browser su http://localhost:3000
 
 FUNZIONALITA':
-- Gestione clienti: crea, rinomina, assegna un colore ed elimina clienti (pulsante "Clienti" in alto)
-- Un cliente con attività collegate NON puo' essere eliminato: il pulsante elimina risulta disabilitato
-  finche' non sposti/elimini prima tutte le sue attività
-- Ogni attività va assegnata a un cliente
-- Filtro per cliente, oltre al filtro Tutti/Pagati/Da pagare e alla ricerca testuale
+- Gestione clienti semplice: crea, rinomina ed elimina clienti (pulsante "Clienti" in alto). Niente colori,
+  solo il nome.
+- Un cliente con attività collegate NON puo' essere eliminato finche' non sposti/elimini prima le sue attività
+- Ricerca cliente dappertutto: nel filtro principale, nel form di nuova/modifica attività e nella gestione
+  clienti puoi digitare per cercare invece di scorrere un elenco lungo
+- Filtro per cliente, oltre al filtro Tutti/Pagati/Da pagare e alla ricerca testuale sulle attività
 - Le attività sono raggruppate per cliente, sia a schermo che in stampa, con totale per cliente e totale generale
-- L'eliminazione di un'attività è DEFINITIVA (nessun cestino): viene chiesta conferma prima di procedere
-- Importi sempre in formato italiano: punto ogni 3 cifre per le migliaia, virgola per i decimali (es. 1.000,00)
+- L'eliminazione di un'attività è DEFINITIVA: viene chiesta conferma prima di procedere
+- Campo importo: accetta solo numeri, e formatta automaticamente in tempo reale mentre scrivi.
+  Es. digitando "1000" diventa subito "1.000", digitando "1000000" diventa "1.000.000" (1 milione).
+  Per i centesimi usa la virgola, es. "1000,50" -> "1.000,50"
 - Stampa (pulsante "Stampa") riporta data/ora di generazione e i filtri applicati, organizzata per cliente
 
 NOTE TECNICHE:

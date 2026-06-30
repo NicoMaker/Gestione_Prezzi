@@ -14,7 +14,6 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS clienti (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL UNIQUE,
-    colore TEXT DEFAULT '#2563eb',
     creato_il TEXT DEFAULT (datetime('now', 'localtime'))
   );
 `);
@@ -34,9 +33,9 @@ db.exec(`
   );
 `);
 
-// Migrazione per database gia' esistenti
-const colonne = db.prepare("PRAGMA table_info(attivita)").all().map(c => c.name);
-if (!colonne.includes('cliente_id')) {
+// Migrazioni per database gia' esistenti
+const colonneAttivita = db.prepare("PRAGMA table_info(attivita)").all().map(c => c.name);
+if (!colonneAttivita.includes('cliente_id')) {
   db.exec(`ALTER TABLE attivita ADD COLUMN cliente_id INTEGER REFERENCES clienti(id)`);
 }
 
