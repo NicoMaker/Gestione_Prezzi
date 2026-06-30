@@ -26,8 +26,8 @@
 body {
   margin: 0;
   font-family:
-    "Inter",
-    "Segoe UI",
+    'Inter',
+    'Segoe UI',
     Roboto,
     -apple-system,
     BlinkMacSystemFont,
@@ -156,7 +156,7 @@ body {
   overflow: hidden;
 }
 .card::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -338,7 +338,7 @@ body {
 }
 .gruppo-perc {
   font-size: 0.7rem;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   padding: 1px 6px;
   border-radius: 10px;
   font-weight: 600;
@@ -380,7 +380,7 @@ body {
   overflow: hidden;
 }
 .riepilogo-voce::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -582,9 +582,9 @@ tbody tr.riga-da-pagare {
   margin: 14px 0 6px;
   color: var(--text-muted);
 }
-.modal input[type="text"],
-.modal input[type="date"],
-.modal input[type="number"],
+.modal input[type='text'],
+.modal input[type='date'],
+.modal input[type='number'],
 .modal select,
 .modal textarea {
   width: 100%;
@@ -666,7 +666,7 @@ tbody tr.riga-da-pagare {
   margin-top: 16px;
   align-items: center;
 }
-.cliente-form-nuovo input[type="text"] {
+.cliente-form-nuovo input[type='text'] {
   flex: 1;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
@@ -674,7 +674,7 @@ tbody tr.riga-da-pagare {
   font-size: 0.9rem;
   font-family: inherit;
 }
-.cliente-form-nuovo input[type="color"] {
+.cliente-form-nuovo input[type='color'] {
   width: 40px;
   height: 38px;
   border: 1px solid var(--border);
