@@ -4,17 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestione Attività &amp; Pagamenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="topbar no-print">
   <div class="topbar-inner">
-    <h1>📋 Gestione Attività &amp; Pagamenti</h1>
+    <div class="brand">
+      <span class="brand-logo">📋</span>
+      <div>
+        <h1>Gestione Attività</h1>
+        <span class="brand-sub">Attività &amp; pagamenti per cliente</span>
+      </div>
+    </div>
     <div class="topbar-actions">
-      <button id="btnNuovo" class="btn btn-primary">+ Nuova attività</button>
-      <button id="btnCestino" class="btn btn-outline">🗑️ Cestino <span id="cestinoCount" class="cestino-badge hidden">0</span></button>
+      <button id="btnClienti" class="btn btn-outline">👥 Clienti</button>
       <button id="btnStampa" class="btn btn-outline">🖨️ Stampa</button>
+      <button id="btnNuovo" class="btn btn-primary">+ Nuova attività</button>
     </div>
   </div>
 </div>
@@ -42,44 +50,33 @@
 
   <!-- Filtri -->
   <section class="filters no-print">
-    <button class="filtro-btn active" data-filtro="tutti">Tutti</button>
-    <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
-    <button class="filtro-btn" data-filtro="da_pagare">⏳ Da pagare</button>
-    <input type="text" id="cercaInput" placeholder="🔎 Cerca per descrizione..." class="search-input">
+    <div class="filtro-group" id="filtroStato">
+      <button class="filtro-btn active" data-filtro="tutti">Tutti</button>
+      <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
+      <button class="filtro-btn" data-filtro="da_pagare">⏳ Da pagare</button>
+    </div>
+    <select id="filtroCliente" class="select-cliente">
+      <option value="tutti">👥 Tutti i clienti</option>
+    </select>
+    <input type="text" id="cercaInput" placeholder="🔎 Cerca per descrizione o nota..." class="search-input">
   </section>
 
   <!-- Intestazione stampa -->
   <div class="print-header">
     <h1>Riepilogo Attività e Pagamenti</h1>
     <p id="printDate"></p>
+    <p id="printFiltro"></p>
   </div>
 
-  <!-- Tabella -->
-  <section class="table-wrap">
-    <table id="tabella">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Attività realizzata</th>
-          <th>Importo</th>
-          <th>Stato</th>
-          <th class="no-print">Note</th>
-          <th class="no-print">Azioni</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <!-- righe generate via JS -->
-      </tbody>
-      <tfoot>
-        <tr class="riga-totale">
-          <td colspan="2">Totale</td>
-          <td id="footTotale">€ 0,00</td>
-          <td colspan="3"></td>
-        </tr>
-      </tfoot>
-    </table>
-    <p id="vuoto" class="vuoto hidden">Nessuna attività trovata.</p>
-  </section>
+  <!-- Contenuto: tabelle raggruppate per cliente -->
+  <section id="contenitoreGruppi"></section>
+  <p id="vuoto" class="vuoto hidden">Nessuna attività trovata.</p>
+
+  <!-- Totale generale (visibile solo se piu' di un gruppo o in stampa) -->
+  <div class="totale-generale" id="totaleGenerale">
+    <span>Totale visualizzato</span>
+    <strong id="footTotale">€ 0,00</strong>
+  </div>
 
 </main>
 
@@ -89,6 +86,14 @@
     <h2 id="modalTitolo">Nuova attività</h2>
     <form id="formAttivita">
       <input type="hidden" id="fId">
+
+      <label for="fCliente">Cliente</label>
+      <div class="cliente-select-row">
+        <select id="fCliente" required>
+          <option value="">Seleziona cliente...</option>
+        </select>
+        <button type="button" id="btnNuovoClienteInline" class="btn btn-outline btn-small" title="Crea nuovo cliente">+ Nuovo</button>
+      </div>
 
       <label for="fData">Data</label>
       <input type="date" id="fData" required>
@@ -120,7 +125,7 @@
 <div id="confirmOverlay" class="modal-overlay hidden no-print">
   <div class="modal modal-small">
     <h2>Eliminare questa attività?</h2>
-    <p>L'operazione non è reversibile.</p>
+    <p>L'operazione è definitiva e non è reversibile.</p>
     <div class="modal-actions">
       <button id="btnAnnullaElimina" class="btn btn-outline">Annulla</button>
       <button id="btnConfermaElimina" class="btn btn-danger">Elimina</button>
@@ -128,18 +133,24 @@
   </div>
 </div>
 
-<!-- Modale Cestino -->
-<div id="cestinoOverlay" class="modal-overlay hidden no-print">
+<!-- Modale Gestione Clienti -->
+<div id="clientiOverlay" class="modal-overlay hidden no-print">
   <div class="modal modal-large">
     <div class="modal-header-row">
-      <h2>🗑️ Cestino</h2>
-      <button id="btnSvuotaCestino" class="btn btn-danger btn-small">Svuota cestino</button>
+      <h2>👥 Gestione clienti</h2>
     </div>
-    <p class="hint">Gli elementi eliminati restano qui 30 giorni prima di essere cancellati definitivamente in automatico ogni notte.</p>
-    <div id="cestinoLista" class="cestino-lista"></div>
-    <p id="cestinoVuoto" class="vuoto hidden">Il cestino è vuoto.</p>
+
+    <form id="formClienteNuovo" class="cliente-form-nuovo">
+      <input type="text" id="fNuovoClienteNome" placeholder="Nome nuovo cliente" required>
+      <input type="color" id="fNuovoClienteColore" value="#2563eb" title="Colore identificativo">
+      <button type="submit" class="btn btn-primary btn-small">+ Aggiungi</button>
+    </form>
+
+    <div id="clientiLista" class="clienti-lista"></div>
+    <p id="clientiVuoto" class="vuoto hidden">Nessun cliente creato. Aggiungine uno qui sopra.</p>
+
     <div class="modal-actions">
-      <button id="btnChiudiCestino" class="btn btn-outline">Chiudi</button>
+      <button id="btnChiudiClienti" class="btn btn-outline">Chiudi</button>
     </div>
   </div>
 </div>
