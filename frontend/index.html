@@ -66,16 +66,29 @@
             ⏳ Da pagare
           </button>
         </div>
-        <div class="combo" id="comboFiltroCliente">
-          <input
-            type="text"
-            class="combo-input"
-            id="comboFiltroClienteInput"
-            placeholder="👥 Tutti i clienti"
-            autocomplete="off"
-          />
-          <input type="hidden" id="comboFiltroClienteValue" value="tutti" />
-          <div class="combo-list hidden" id="comboFiltroClienteList"></div>
+        <div class="multiselect" id="multiselectFiltroCliente">
+          <button
+            type="button"
+            class="combo-input multiselect-toggle"
+            id="multiselectFiltroClienteToggle"
+          >
+            <span id="multiselectFiltroClienteLabel">👥 Tutti i clienti</span>
+            <span class="multiselect-caret">▾</span>
+          </button>
+          <div class="combo-list hidden" id="multiselectFiltroClienteList">
+            <input
+              type="text"
+              class="multiselect-search"
+              id="multiselectFiltroClienteSearch"
+              placeholder="🔎 Cerca cliente..."
+              autocomplete="off"
+            />
+            <div class="multiselect-actions">
+              <button type="button" class="multiselect-link" id="multiselectFiltroClienteTutti">Seleziona visibili</button>
+              <button type="button" class="multiselect-link" id="multiselectFiltroClienteNessuno">Deseleziona visibili</button>
+            </div>
+            <div id="multiselectFiltroClienteOpzioni" class="multiselect-opzioni"></div>
+          </div>
         </div>
         <input
           type="text"

@@ -104,18 +104,29 @@ app.delete('/api/clienti/:id', (req, res) => {
 
 // ===================== ATTIVITA' =====================
 
-// GET lista attivita, filtri: ?filtro=tutti|pagati|da_pagare & ?cliente_id=N
+// Helper: converte ?cliente_id=1,2,3 (o 'tutti'/vuoto) in array di ID numerici
+function parseClienteIds(raw) {
+  if (!raw || raw === 'tutti') return []
+  return String(raw)
+    .split(',')
+    .map(s => s.trim())
+    .filter(s => s !== '' && s !== 'tutti')
+    .map(Number)
+    .filter(n => !isNaN(n))
+}
+
+// GET lista attivita, filtri: ?filtro=tutti|pagati|da_pagare & ?cliente_id=N,M,...
 app.get('/api/attivita', (req, res) => {
   const filtro = req.query.filtro || 'tutti'
-  const clienteId = req.query.cliente_id
+  const clienteIds = parseClienteIds(req.query.cliente_id)
 
   let query = SELECT_BASE + ' WHERE 1=1'
   const params = []
   if (filtro === 'pagati') query += ' AND a.pagato = 1'
   else if (filtro === 'da_pagare') query += ' AND a.pagato = 0'
-  if (clienteId && clienteId !== 'tutti') {
-    query += ' AND a.cliente_id = ?'
-    params.push(clienteId)
+  if (clienteIds.length > 0) {
+    query += ` AND a.cliente_id IN (${clienteIds.map(() => '?').join(',')})`
+    params.push(...clienteIds)
   }
   query += ' ORDER BY c.nome ASC, a.data ASC, a.id ASC'
 
@@ -123,14 +134,14 @@ app.get('/api/attivita', (req, res) => {
   res.json(rows.map(rowToObj))
 })
 
-// GET statistiche totali, opzionalmente filtrate per cliente
+// GET statistiche totali, opzionalmente filtrate per uno o piu' clienti
 app.get('/api/stats', (req, res) => {
-  const clienteId = req.query.cliente_id
-  const filtroCliente =
-    clienteId && clienteId !== 'tutti' ? ' WHERE cliente_id = ?' : ''
-  const filtroClienteAnd =
-    clienteId && clienteId !== 'tutti' ? ' AND cliente_id = ?' : ''
-  const p = clienteId && clienteId !== 'tutti' ? [clienteId] : []
+  const clienteIds = parseClienteIds(req.query.cliente_id)
+  const inClause =
+    clienteIds.length > 0 ? `(${clienteIds.map(() => '?').join(',')})` : null
+  const filtroCliente = inClause ? ` WHERE cliente_id IN ${inClause}` : ''
+  const filtroClienteAnd = inClause ? ` AND cliente_id IN ${inClause}` : ''
+  const p = clienteIds.length > 0 ? clienteIds : []
 
   const tutti = db
     .prepare(

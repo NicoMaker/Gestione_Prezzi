@@ -3,7 +3,7 @@ const STATS_API = '/api/stats'
 const CLIENTI_API = '/api/clienti'
 
 let filtroStato = 'tutti'
-let filtroClienteId = 'tutti'
+let filtroClienteIds = [] // array vuoto = tutti i clienti
 let testoCerca = ''
 let datiCorrenti = []
 let clientiCorrenti = []
@@ -194,20 +194,148 @@ function creaComboCliente(
   }
 }
 
-let comboFiltroCliente, comboFormCliente
+let multiselectFiltroCliente, comboFormCliente
+
+// ---------- Componente multi-selezione clienti (filtro) ----------
+function creaMultiSelectCliente({
+  containerId,
+  toggleId,
+  labelId,
+  listId,
+  searchId,
+  opzioniContainerId,
+  btnTuttiId,
+  btnNessunoId,
+  onChange,
+}) {
+  const container = document.getElementById(containerId)
+  const toggle = document.getElementById(toggleId)
+  const label = document.getElementById(labelId)
+  const lista = document.getElementById(listId)
+  const search = document.getElementById(searchId)
+  const opzioniContainer = document.getElementById(opzioniContainerId)
+  const btnTutti = document.getElementById(btnTuttiId)
+  const btnNessuno = document.getElementById(btnNessunoId)
+
+  let selezionati = [] // array di id (stringa) selezionati, vuoto = tutti
+
+  function aggiornaEtichetta() {
+    if (selezionati.length === 0) {
+      label.textContent = '👥 Tutti i clienti'
+    } else if (selezionati.length === 1) {
+      const c = clientiCorrenti.find(
+        c => String(c.id) === String(selezionati[0])
+      )
+      label.textContent = '👤 ' + (c ? c.nome : '1 cliente')
+    } else {
+      label.textContent = `👥 ${selezionati.length} clienti selezionati`
+    }
+  }
+
+  function renderOpzioni(filtro) {
+    const q = (filtro || '').trim().toLowerCase()
+    const filtrati = clientiCorrenti.filter(c =>
+      c.nome.toLowerCase().includes(q)
+    )
+    opzioniContainer.innerHTML = ''
+    if (filtrati.length === 0) {
+      opzioniContainer.innerHTML =
+        '<div class="multiselect-item-vuoto">Nessun cliente trovato</div>'
+      return
+    }
+    for (const c of filtrati) {
+      const id = String(c.id)
+      const item = document.createElement('label')
+      item.className = 'multiselect-item'
+      const checked = selezionati.includes(id) ? 'checked' : ''
+      item.innerHTML = `<input type="checkbox" value="${id}" ${checked}> <span>${escapeHtml(c.nome)}</span>`
+      const checkbox = item.querySelector('input')
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          if (!selezionati.includes(id)) selezionati.push(id)
+        } else {
+          selezionati = selezionati.filter(x => x !== id)
+        }
+        aggiornaEtichetta()
+        if (onChange) onChange([...selezionati])
+      })
+      opzioniContainer.appendChild(item)
+    }
+  }
+
+  toggle.addEventListener('click', () => {
+    const apri = lista.classList.contains('hidden')
+    if (apri) {
+      search.value = ''
+      renderOpzioni('')
+      lista.classList.remove('hidden')
+      search.focus()
+    } else {
+      lista.classList.add('hidden')
+    }
+  })
+
+  search.addEventListener('input', () => renderOpzioni(search.value))
+
+  btnTutti.addEventListener('click', () => {
+    const q = (search.value || '').trim().toLowerCase()
+    const visibili = clientiCorrenti.filter(c =>
+      c.nome.toLowerCase().includes(q)
+    )
+    const idsVisibili = visibili.map(c => String(c.id))
+    const aggiunti = new Set([...selezionati, ...idsVisibili])
+    selezionati = [...aggiunti]
+    renderOpzioni(search.value)
+    aggiornaEtichetta()
+    if (onChange) onChange([...selezionati])
+  })
+
+  btnNessuno.addEventListener('click', () => {
+    const q = (search.value || '').trim().toLowerCase()
+    const visibili = clientiCorrenti.filter(c =>
+      c.nome.toLowerCase().includes(q)
+    )
+    const idsVisibili = new Set(visibili.map(c => String(c.id)))
+    selezionati = selezionati.filter(id => !idsVisibili.has(id))
+    renderOpzioni(search.value)
+    aggiornaEtichetta()
+    if (onChange) onChange([...selezionati])
+  })
+
+  document.addEventListener('click', e => {
+    if (!container.contains(e.target)) lista.classList.add('hidden')
+  })
+
+  return {
+    getSelezionati() {
+      return [...selezionati]
+    },
+    setSelezionati(arr) {
+      selezionati = (arr || []).map(String)
+      aggiornaEtichetta()
+    },
+    refresh() {
+      // rimuove dalla selezione eventuali clienti non piu' esistenti
+      const idsValidi = new Set(clientiCorrenti.map(c => String(c.id)))
+      selezionati = selezionati.filter(id => idsValidi.has(id))
+      aggiornaEtichetta()
+    },
+  }
+}
 
 // ---------- Caricamento clienti ----------
 async function caricaClienti() {
   const res = await fetch(CLIENTI_API)
   clientiCorrenti = await res.json()
-  if (comboFiltroCliente) comboFiltroCliente.refresh()
+  if (multiselectFiltroCliente) multiselectFiltroCliente.refresh()
   if (comboFormCliente) comboFormCliente.refresh()
 }
 
 // ---------- Caricamento dati ----------
 async function caricaStats() {
   const params = new URLSearchParams()
-  if (filtroClienteId !== 'tutti') params.set('cliente_id', filtroClienteId)
+  if (filtroClienteIds.length > 0)
+    params.set('cliente_id', filtroClienteIds.join(','))
   const res = await fetch(`${STATS_API}?${params.toString()}`)
   const stats = await res.json()
   document.getElementById('statTotale').textContent = formattaEuro(stats.totale)
@@ -240,7 +368,8 @@ async function caricaStats() {
 async function caricaTabella() {
   const params = new URLSearchParams()
   params.set('filtro', filtroStato)
-  if (filtroClienteId !== 'tutti') params.set('cliente_id', filtroClienteId)
+  if (filtroClienteIds.length > 0)
+    params.set('cliente_id', filtroClienteIds.join(','))
 
   const res = await fetch(`${API}?${params.toString()}`)
   let dati = await res.json()
@@ -468,8 +597,8 @@ function apriModaleNuovo() {
   form.reset()
   document.getElementById('fId').value = ''
   document.getElementById('fData').value = new Date().toISOString().slice(0, 10)
-  if (filtroClienteId !== 'tutti') {
-    comboFormCliente.setValore(filtroClienteId)
+  if (filtroClienteIds.length === 1) {
+    comboFormCliente.setValore(filtroClienteIds[0])
   } else {
     comboFormCliente.setValore('')
   }
@@ -696,11 +825,12 @@ document.getElementById('btnStampa').addEventListener('click', () => {
     da_pagare: 'Solo da pagare',
   }
   let testoFiltro = `Stato: ${etichette[filtroStato]}`
-  if (filtroClienteId !== 'tutti') {
-    const c = clientiCorrenti.find(
-      c => String(c.id) === String(filtroClienteId)
-    )
-    testoFiltro += ` · Cliente: ${c ? c.nome : ''}`
+  if (filtroClienteIds.length > 0) {
+    const nomi = filtroClienteIds
+      .map(id => clientiCorrenti.find(c => String(c.id) === String(id)))
+      .filter(Boolean)
+      .map(c => c.nome)
+    testoFiltro += ` · Cliente: ${nomi.join(', ')}`
   } else {
     testoFiltro += ' · Tutti i clienti'
   }
@@ -710,19 +840,20 @@ document.getElementById('btnStampa').addEventListener('click', () => {
 
 // ---------- Avvio ----------
 ;(async function init() {
-  comboFiltroCliente = creaComboCliente(
-    'comboFiltroCliente',
-    'comboFiltroClienteInput',
-    'comboFiltroClienteValue',
-    'comboFiltroClienteList',
-    {
-      opzioneTutti: true,
-      onChange(id) {
-        filtroClienteId = id
-        aggiornaTutto()
-      },
-    }
-  )
+  multiselectFiltroCliente = creaMultiSelectCliente({
+    containerId: 'multiselectFiltroCliente',
+    toggleId: 'multiselectFiltroClienteToggle',
+    labelId: 'multiselectFiltroClienteLabel',
+    listId: 'multiselectFiltroClienteList',
+    searchId: 'multiselectFiltroClienteSearch',
+    opzioniContainerId: 'multiselectFiltroClienteOpzioni',
+    btnTuttiId: 'multiselectFiltroClienteTutti',
+    btnNessunoId: 'multiselectFiltroClienteNessuno',
+    onChange(ids) {
+      filtroClienteIds = ids
+      aggiornaTutto()
+    },
+  })
   comboFormCliente = creaComboCliente(
     'comboFormCliente',
     'comboFormClienteInput',
