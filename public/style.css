@@ -225,6 +225,39 @@ tbody tr.riga-da-pagare { background: rgba(217,119,6,0.04); }
   box-shadow: var(--shadow);
 }
 
+.hint { font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0; }
+
+.cestino-badge {
+  background: var(--red);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  padding: 1px 7px;
+  margin-left: 4px;
+  font-weight: 700;
+}
+
+.modal-large { max-width: 600px; }
+.modal-header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.modal-header-row h2 { margin: 0; }
+.btn-small { padding: 6px 12px; font-size: 0.82rem; }
+
+.cestino-lista { max-height: 360px; overflow-y: auto; margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.cestino-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+}
+.cestino-item-info { display: flex; flex-direction: column; gap: 2px; }
+.cestino-item-info strong { font-size: 0.92rem; }
+.cestino-item-info span { color: var(--text-muted); font-size: 0.78rem; }
+.cestino-item-azioni { display: flex; gap: 6px; flex-shrink: 0; }
+
 .print-header { display: none; }
 
 /* Stampa */

@@ -21,10 +21,21 @@ db.exec(`
     importo REAL NOT NULL DEFAULT 0,
     pagato INTEGER NOT NULL DEFAULT 0,
     note TEXT DEFAULT '',
+    eliminato INTEGER NOT NULL DEFAULT 0,
+    eliminato_il TEXT DEFAULT NULL,
     creato_il TEXT DEFAULT (datetime('now', 'localtime')),
     aggiornato_il TEXT DEFAULT (datetime('now', 'localtime'))
   );
 `);
+
+// Migrazione: se il db esisteva gia' senza le colonne del cestino, le aggiunge
+const colonne = db.prepare("PRAGMA table_info(attivita)").all().map(c => c.name);
+if (!colonne.includes('eliminato')) {
+  db.exec(`ALTER TABLE attivita ADD COLUMN eliminato INTEGER NOT NULL DEFAULT 0`);
+}
+if (!colonne.includes('eliminato_il')) {
+  db.exec(`ALTER TABLE attivita ADD COLUMN eliminato_il TEXT DEFAULT NULL`);
+}
 
 // Dati iniziali presi dalla tabella fornita dall'utente (solo alla prima creazione del DB)
 if (isNewDb) {

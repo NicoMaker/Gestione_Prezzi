@@ -1,5 +1,6 @@
 const API = '/api/attivita';
 const STATS_API = '/api/stats';
+const CESTINO_API = '/api/cestino';
 
 let filtroCorrente = 'tutti';
 let testoCerca = '';
@@ -8,7 +9,31 @@ let datiCorrenti = [];
 const tbody = document.getElementById('tbody');
 const vuotoMsg = document.getElementById('vuoto');
 
-// ---------- Utility ----------
+// ---------- Utility numeri / valute (formato italiano) ----------
+
+// Converte una stringa scritta dall'utente in formato italiano (es. "1.000,00" o "1000" o "50,5")
+// in un numero JS valido (es. 1000.00 / 1000 / 50.5)
+function parseImportoIT(str) {
+  if (str === null || str === undefined) return NaN;
+  let s = String(str).trim();
+  if (s === '') return NaN;
+
+  // Se contiene sia punto che virgola: il punto è separatore delle migliaia, la virgola dei decimali
+  if (s.includes('.') && s.includes(',')) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (s.includes(',')) {
+    // Solo virgola -> è il separatore decimale
+    s = s.replace(',', '.');
+  }
+  // Se contiene solo punti, lo lasciamo come separatore decimale standard (es. "50.5")
+  return parseFloat(s);
+}
+
+// Formatta un numero per la visualizzazione nei campi del form, es. 1000 -> "1.000,00"
+function formattaImportoInput(numero) {
+  return Number(numero).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 function formattaEuro(numero) {
   return '€ ' + Number(numero).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -37,7 +62,14 @@ async function caricaStats() {
   document.getElementById('statPagatoNum').textContent = `${stats.numero_pagati} voci`;
   document.getElementById('statDaPagare').textContent = formattaEuro(stats.da_pagare);
   document.getElementById('statDaPagareNum').textContent = `${stats.numero_da_pagare} voci`;
-  document.getElementById('footTotale').textContent = formattaEuro(stats.totale);
+
+  const badge = document.getElementById('cestinoCount');
+  if (stats.numero_cestino > 0) {
+    badge.textContent = stats.numero_cestino;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
 }
 
 async function caricaTabella() {
@@ -51,6 +83,17 @@ async function caricaTabella() {
 
   datiCorrenti = dati;
   renderTabella(dati);
+  aggiornaTotaleVisualizzato(dati);
+}
+
+// Il totale a fondo tabella riflette SEMPRE i soli elementi attualmente visibili
+// (rispetta filtro Tutti/Pagati/Da pagare e la ricerca), niente piu' "1500 fisso".
+function aggiornaTotaleVisualizzato(dati) {
+  const somma = dati.reduce((acc, r) => acc + Number(r.importo), 0);
+  document.getElementById('footTotale').textContent = formattaEuro(somma);
+
+  const etichette = { tutti: 'Totale', pagati: 'Totale pagato (filtrato)', da_pagare: 'Totale da pagare (filtrato)' };
+  document.querySelector('.riga-totale td:first-child').textContent = etichette[filtroCorrente] || 'Totale';
 }
 
 function renderTabella(dati) {
@@ -79,7 +122,7 @@ function renderTabella(dati) {
       <td class="no-print">
         <div class="azioni">
           <button class="icon-btn" data-modifica="${riga.id}" title="Modifica">✏️</button>
-          <button class="icon-btn" data-elimina="${riga.id}" title="Elimina">🗑️</button>
+          <button class="icon-btn" data-elimina="${riga.id}" title="Sposta nel cestino">🗑️</button>
         </div>
       </td>
     `;
@@ -130,10 +173,20 @@ document.getElementById('cercaInput').addEventListener('input', (e) => {
 // ---------- Modale Nuova/Modifica ----------
 const modalOverlay = document.getElementById('modalOverlay');
 const form = document.getElementById('formAttivita');
+const fImporto = document.getElementById('fImporto');
 
 document.getElementById('btnNuovo').addEventListener('click', () => apriModaleNuovo());
 document.getElementById('btnAnnulla').addEventListener('click', chiudiModale);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) chiudiModale(); });
+
+// Mentre l'utente scrive l'importo lasciamo libero (accetta sia virgola che punto),
+// quando esce dal campo lo riformattiamo in stile italiano leggibile (1.000,00)
+fImporto.addEventListener('blur', () => {
+  const valore = parseImportoIT(fImporto.value);
+  if (!isNaN(valore)) {
+    fImporto.value = formattaImportoInput(valore);
+  }
+});
 
 function apriModaleNuovo() {
   document.getElementById('modalTitolo').textContent = 'Nuova attività';
@@ -151,7 +204,7 @@ function apriModaleModifica(id) {
   document.getElementById('fId').value = riga.id;
   document.getElementById('fData').value = riga.data;
   document.getElementById('fDescrizione').value = riga.descrizione;
-  document.getElementById('fImporto').value = riga.importo;
+  fImporto.value = formattaImportoInput(riga.importo);
   document.getElementById('fNote').value = riga.note || '';
   document.getElementById('fPagato').checked = riga.pagato;
   modalOverlay.classList.remove('hidden');
@@ -163,11 +216,19 @@ function chiudiModale() {
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  const importoNumerico = parseImportoIT(fImporto.value);
+  if (isNaN(importoNumerico) || importoNumerico < 0) {
+    mostraToast('⚠️ Importo non valido. Es: 1.000,00 oppure 50,00');
+    fImporto.focus();
+    return;
+  }
+
   const id = document.getElementById('fId').value;
   const payload = {
     data: document.getElementById('fData').value,
     descrizione: document.getElementById('fDescrizione').value.trim(),
-    importo: parseFloat(document.getElementById('fImporto').value),
+    importo: importoNumerico,
     note: document.getElementById('fNote').value.trim(),
     pagato: document.getElementById('fPagato').checked,
   };
@@ -192,7 +253,7 @@ form.addEventListener('submit', async (e) => {
   aggiornaTutto();
 });
 
-// ---------- Eliminazione ----------
+// ---------- Eliminazione (sposta nel cestino) ----------
 const confirmOverlay = document.getElementById('confirmOverlay');
 let idDaEliminare = null;
 
@@ -207,7 +268,7 @@ document.getElementById('btnAnnullaElimina').addEventListener('click', () => {
 document.getElementById('btnConfermaElimina').addEventListener('click', async () => {
   if (idDaEliminare) {
     await fetch(`${API}/${idDaEliminare}`, { method: 'DELETE' });
-    mostraToast('Attività eliminata');
+    mostraToast('Attività spostata nel cestino');
   }
   confirmOverlay.classList.add('hidden');
   idDaEliminare = null;
@@ -217,6 +278,77 @@ confirmOverlay.addEventListener('click', (e) => {
   if (e.target === confirmOverlay) {
     confirmOverlay.classList.add('hidden');
     idDaEliminare = null;
+  }
+});
+
+// ---------- Cestino ----------
+const cestinoOverlay = document.getElementById('cestinoOverlay');
+const cestinoLista = document.getElementById('cestinoLista');
+const cestinoVuoto = document.getElementById('cestinoVuoto');
+
+document.getElementById('btnCestino').addEventListener('click', apriCestino);
+document.getElementById('btnChiudiCestino').addEventListener('click', () => cestinoOverlay.classList.add('hidden'));
+cestinoOverlay.addEventListener('click', (e) => { if (e.target === cestinoOverlay) cestinoOverlay.classList.add('hidden'); });
+
+async function apriCestino() {
+  cestinoOverlay.classList.remove('hidden');
+  await caricaCestino();
+}
+
+async function caricaCestino() {
+  const res = await fetch(CESTINO_API);
+  const dati = await res.json();
+
+  cestinoLista.innerHTML = '';
+  if (dati.length === 0) {
+    cestinoVuoto.classList.remove('hidden');
+    return;
+  }
+  cestinoVuoto.classList.add('hidden');
+
+  for (const riga of dati) {
+    const div = document.createElement('div');
+    div.className = 'cestino-item';
+    div.innerHTML = `
+      <div class="cestino-item-info">
+        <strong>${escapeHtml(riga.descrizione)} — ${formattaEuro(riga.importo)}</strong>
+        <span>Eliminato il ${riga.eliminato_il || ''} · Data attività ${formattaDataIT(riga.data)}</span>
+      </div>
+      <div class="cestino-item-azioni">
+        <button class="btn btn-outline btn-small" data-ripristina="${riga.id}">↩️ Ripristina</button>
+        <button class="btn btn-danger btn-small" data-elimina-def="${riga.id}">Elimina def.</button>
+      </div>
+    `;
+    cestinoLista.appendChild(div);
+  }
+}
+
+cestinoLista.addEventListener('click', async (e) => {
+  const ripristinaId = e.target.closest('[data-ripristina]')?.dataset.ripristina;
+  const eliminaDefId = e.target.closest('[data-elimina-def]')?.dataset.eliminaDef;
+
+  if (ripristinaId) {
+    await fetch(`${CESTINO_API}/${ripristinaId}/ripristina`, { method: 'POST' });
+    mostraToast('Attività ripristinata');
+    await caricaCestino();
+    aggiornaTutto();
+  }
+  if (eliminaDefId) {
+    if (confirm('Eliminare definitivamente? Non sarà più recuperabile.')) {
+      await fetch(`${CESTINO_API}/${eliminaDefId}`, { method: 'DELETE' });
+      mostraToast('Eliminato definitivamente');
+      await caricaCestino();
+      aggiornaTutto();
+    }
+  }
+});
+
+document.getElementById('btnSvuotaCestino').addEventListener('click', async () => {
+  if (confirm('Svuotare completamente il cestino? Tutti gli elementi verranno eliminati definitivamente.')) {
+    await fetch(CESTINO_API, { method: 'DELETE' });
+    mostraToast('Cestino svuotato');
+    await caricaCestino();
+    aggiornaTutto();
   }
 });
 
