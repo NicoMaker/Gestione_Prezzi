@@ -17,7 +17,6 @@ function parseImportoIT(str) {
   if (str === null || str === undefined) return NaN;
   let s = String(str).trim();
   if (s === "") return NaN;
-  // A questo punto il campo contiene solo cifre, punti (migliaia) ed eventualmente una virgola (decimali)
   s = s.replace(/\./g, "").replace(",", ".");
   return parseFloat(s);
 }
@@ -60,27 +59,20 @@ function escapeHtml(str) {
 }
 
 // ---------- Formattazione live dell'importo mentre si scrive ----------
-// Accetta solo cifre ed eventualmente UNA virgola per i decimali.
-// Mentre si digita "1000" diventa subito "1.000", "1000000" diventa "1.000.000".
 function formattaImportoLive(raw) {
   let s = String(raw).replace(/[^0-9,]/g, "");
-
-  // Tiene solo la prima virgola digitata
   const primaVirgola = s.indexOf(",");
   if (primaVirgola !== -1) {
     s =
       s.slice(0, primaVirgola + 1) +
       s.slice(primaVirgola + 1).replace(/,/g, "");
   }
-
   let [intPart, decPart] = s.split(",");
   intPart = intPart || "";
-  // Rimuove zeri iniziali superflui (ma non se è l'unica cifra)
   intPart = intPart.replace(/^0+(?=\d)/, "");
   const intFormattata = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
   if (decPart !== undefined) {
-    decPart = decPart.slice(0, 2); // massimo 2 decimali
+    decPart = decPart.slice(0, 2);
     return intFormattata + "," + decPart;
   }
   return intFormattata;
@@ -104,7 +96,6 @@ function collegaImportoLive(input) {
 }
 
 // ---------- Componente combobox cercabile per i clienti ----------
-// container: div.combo con dentro input.combo-input, input hidden e div.combo-list
 function creaComboCliente(
   containerId,
   inputId,
@@ -160,7 +151,6 @@ function creaComboCliente(
   input.addEventListener("focus", () => renderLista(""));
   input.addEventListener("input", () => renderLista(input.value));
   input.addEventListener("blur", () => {
-    // Se il testo digitato non corrisponde a nessun cliente selezionato, ripristina l'etichetta corrente
     setTimeout(() => {
       lista.classList.add("hidden");
       const corrente = opzioni().find((o) => o.id === String(hidden.value));
@@ -231,6 +221,18 @@ async function caricaStats() {
   );
   document.getElementById("statDaPagareNum").textContent =
     `${stats.numero_da_pagare} voci`;
+
+  // Percentuali
+  const totale = stats.totale;
+  if (totale > 0) {
+    const percPagato = ((stats.pagato / totale) * 100).toFixed(1);
+    const percDaPagare = ((stats.da_pagare / totale) * 100).toFixed(1);
+    document.getElementById("statPagatoPerc").textContent = `(${percPagato}%)`;
+    document.getElementById("statDaPagarePerc").textContent = `(${percDaPagare}%)`;
+  } else {
+    document.getElementById("statPagatoPerc").textContent = "(0%)";
+    document.getElementById("statDaPagarePerc").textContent = "(0%)";
+  }
 }
 
 async function caricaTabella() {
@@ -272,6 +274,17 @@ function aggiornaTotaleVisualizzato(dati) {
     formattaEuro(sommaDaPagare);
   document.getElementById("footDaPagareNum").textContent =
     `${daPagare.length} voci`;
+
+  // Percentuali per il footer
+  if (somma > 0) {
+    const percPagato = ((sommaPagato / somma) * 100).toFixed(1);
+    const percDaPagare = ((sommaDaPagare / somma) * 100).toFixed(1);
+    document.getElementById("footPagatoPerc").textContent = `(${percPagato}%)`;
+    document.getElementById("footDaPagarePerc").textContent = `(${percDaPagare}%)`;
+  } else {
+    document.getElementById("footPagatoPerc").textContent = "(0%)";
+    document.getElementById("footDaPagarePerc").textContent = "(0%)";
+  }
 }
 
 function raggruppaPerCliente(dati) {
@@ -318,14 +331,21 @@ function renderGruppi(dati) {
       0,
     );
 
+    // Calcolo percentuali per questo cliente
+    let percPagato = "0%", percDaPagare = "0%";
+    if (sommaGruppo > 0) {
+      percPagato = ((sommaPagatoGruppo / sommaGruppo) * 100).toFixed(1) + "%";
+      percDaPagare = ((sommaDaPagareGruppo / sommaGruppo) * 100).toFixed(1) + "%";
+    }
+
     const sezione = document.createElement("section");
     sezione.className = "gruppo-cliente";
     sezione.innerHTML = `
       <div class="gruppo-header">
         <h3>${escapeHtml(gruppo.nome)}</h3>
         <span class="gruppo-conteggio">${gruppo.righe.length} attività</span>
-        <span class="gruppo-chip gruppo-chip-pagato" title="Pagato">✅ ${formattaEuro(sommaPagatoGruppo)} <small>(${pagatiGruppo.length})</small></span>
-        <span class="gruppo-chip gruppo-chip-dapagare" title="Da pagare">⏳ ${formattaEuro(sommaDaPagareGruppo)} <small>(${daPagareGruppo.length})</small></span>
+        <span class="gruppo-chip gruppo-chip-pagato" title="Pagato">✅ ${formattaEuro(sommaPagatoGruppo)} <small>(${pagatiGruppo.length})</small> <span class="gruppo-perc">${percPagato}</span></span>
+        <span class="gruppo-chip gruppo-chip-dapagare" title="Da pagare">⏳ ${formattaEuro(sommaDaPagareGruppo)} <small>(${daPagareGruppo.length})</small> <span class="gruppo-perc">${percDaPagare}</span></span>
         <span class="gruppo-totale">${formattaEuro(sommaGruppo)}</span>
       </div>
       <div class="table-wrap">
