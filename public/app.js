@@ -208,8 +208,19 @@ async function caricaTabella() {
 }
 
 function aggiornaTotaleVisualizzato(dati) {
+  const pagati = dati.filter(r => r.pagato);
+  const daPagare = dati.filter(r => !r.pagato);
+
   const somma = dati.reduce((acc, r) => acc + Number(r.importo), 0);
+  const sommaPagato = pagati.reduce((acc, r) => acc + Number(r.importo), 0);
+  const sommaDaPagare = daPagare.reduce((acc, r) => acc + Number(r.importo), 0);
+
   document.getElementById('footTotale').textContent = formattaEuro(somma);
+  document.getElementById('footTotaleNum').textContent = `${dati.length} voci`;
+  document.getElementById('footPagato').textContent = formattaEuro(sommaPagato);
+  document.getElementById('footPagatoNum').textContent = `${pagati.length} voci`;
+  document.getElementById('footDaPagare').textContent = formattaEuro(sommaDaPagare);
+  document.getElementById('footDaPagareNum').textContent = `${daPagare.length} voci`;
 }
 
 function raggruppaPerCliente(dati) {
@@ -240,6 +251,10 @@ function renderGruppi(dati) {
 
   for (const [chiave, gruppo] of gruppi) {
     const sommaGruppo = gruppo.righe.reduce((acc, r) => acc + Number(r.importo), 0);
+    const pagatiGruppo = gruppo.righe.filter(r => r.pagato);
+    const daPagareGruppo = gruppo.righe.filter(r => !r.pagato);
+    const sommaPagatoGruppo = pagatiGruppo.reduce((acc, r) => acc + Number(r.importo), 0);
+    const sommaDaPagareGruppo = daPagareGruppo.reduce((acc, r) => acc + Number(r.importo), 0);
 
     const sezione = document.createElement('section');
     sezione.className = 'gruppo-cliente';
@@ -247,6 +262,8 @@ function renderGruppi(dati) {
       <div class="gruppo-header">
         <h3>${escapeHtml(gruppo.nome)}</h3>
         <span class="gruppo-conteggio">${gruppo.righe.length} attività</span>
+        <span class="gruppo-chip gruppo-chip-pagato" title="Pagato">✅ ${formattaEuro(sommaPagatoGruppo)} <small>(${pagatiGruppo.length})</small></span>
+        <span class="gruppo-chip gruppo-chip-dapagare" title="Da pagare">⏳ ${formattaEuro(sommaDaPagareGruppo)} <small>(${daPagareGruppo.length})</small></span>
         <span class="gruppo-totale">${formattaEuro(sommaGruppo)}</span>
       </div>
       <div class="table-wrap">

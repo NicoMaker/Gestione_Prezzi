@@ -74,11 +74,27 @@
   <section id="contenitoreGruppi"></section>
   <p id="vuoto" class="vuoto hidden">Nessuna attività trovata.</p>
 
-  <!-- Totale generale (visibile solo se piu' di un gruppo o in stampa) -->
-  <div class="totale-generale" id="totaleGenerale">
-    <span>Totale visualizzato</span>
-    <strong id="footTotale">€ 0,00</strong>
-  </div>
+  <!-- Riepilogo del totale visualizzato (rispetta tutti i filtri attivi) -->
+  <section class="riepilogo-visualizzato" id="riepilogoVisualizzato">
+    <div class="riepilogo-voce riepilogo-tot">
+      <span class="riepilogo-dot"></span>
+      <span class="riepilogo-label">Totale visualizzato</span>
+      <span class="riepilogo-valore" id="footTotale">€ 0,00</span>
+      <span class="riepilogo-num" id="footTotaleNum">0 voci</span>
+    </div>
+    <div class="riepilogo-voce riepilogo-pagato">
+      <span class="riepilogo-dot"></span>
+      <span class="riepilogo-label">✅ Pagato</span>
+      <span class="riepilogo-valore" id="footPagato">€ 0,00</span>
+      <span class="riepilogo-num" id="footPagatoNum">0 voci</span>
+    </div>
+    <div class="riepilogo-voce riepilogo-dapagare">
+      <span class="riepilogo-dot"></span>
+      <span class="riepilogo-label">⏳ Da pagare</span>
+      <span class="riepilogo-valore" id="footDaPagare">€ 0,00</span>
+      <span class="riepilogo-num" id="footDaPagareNum">0 voci</span>
+    </div>
+  </section>
 
 </main>
 
