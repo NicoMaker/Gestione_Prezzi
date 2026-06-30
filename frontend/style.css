@@ -336,6 +336,13 @@ body {
   font-weight: 600;
   opacity: 0.75;
 }
+.gruppo-perc {
+  font-size: 0.7rem;
+  background: rgba(255,255,255,0.5);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
 .gruppo-chip-pagato {
   background: var(--green-bg);
   color: var(--green);
