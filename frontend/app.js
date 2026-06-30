@@ -566,8 +566,20 @@ document.getElementById('filtroStato').addEventListener('click', e => {
   caricaTabella()
 })
 
-document.getElementById('cercaInput').addEventListener('input', e => {
+const cercaInput = document.getElementById('cercaInput')
+const cercaClear = document.getElementById('cercaClear')
+
+cercaInput.addEventListener('input', e => {
   testoCerca = e.target.value
+  cercaClear.classList.toggle('hidden', testoCerca.length === 0)
+  caricaTabella()
+})
+
+cercaClear.addEventListener('click', () => {
+  testoCerca = ''
+  cercaInput.value = ''
+  cercaClear.classList.add('hidden')
+  cercaInput.focus()
   caricaTabella()
 })
 
