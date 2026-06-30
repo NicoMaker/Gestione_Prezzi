@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestione Attività &amp; Pagamenti</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar no-print">
+  <div class="topbar-inner">
+    <h1>📋 Gestione Attività &amp; Pagamenti</h1>
+    <div class="topbar-actions">
+      <button id="btnNuovo" class="btn btn-primary">+ Nuova attività</button>
+      <button id="btnStampa" class="btn btn-outline">🖨️ Stampa</button>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- Riepilogo -->
+  <section class="cards no-print">
+    <div class="card card-tot">
+      <span class="card-label">Totale complessivo</span>
+      <span class="card-value" id="statTotale">€ 0,00</span>
+      <span class="card-sub" id="statTotaleNum">0 voci</span>
+    </div>
+    <div class="card card-pagato">
+      <span class="card-label">Pagato</span>
+      <span class="card-value" id="statPagato">€ 0,00</span>
+      <span class="card-sub" id="statPagatoNum">0 voci</span>
+    </div>
+    <div class="card card-dapagare">
+      <span class="card-label">Da pagare</span>
+      <span class="card-value" id="statDaPagare">€ 0,00</span>
+      <span class="card-sub" id="statDaPagareNum">0 voci</span>
+    </div>
+  </section>
+
+  <!-- Filtri -->
+  <section class="filters no-print">
+    <button class="filtro-btn active" data-filtro="tutti">Tutti</button>
+    <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
+    <button class="filtro-btn" data-filtro="da_pagare">⏳ Da pagare</button>
+    <input type="text" id="cercaInput" placeholder="🔎 Cerca per descrizione..." class="search-input">
+  </section>
+
+  <!-- Intestazione stampa -->
+  <div class="print-header">
+    <h1>Riepilogo Attività e Pagamenti</h1>
+    <p id="printDate"></p>
+  </div>
+
+  <!-- Tabella -->
+  <section class="table-wrap">
+    <table id="tabella">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Attività realizzata</th>
+          <th>Importo</th>
+          <th>Stato</th>
+          <th class="no-print">Note</th>
+          <th class="no-print">Azioni</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <!-- righe generate via JS -->
+      </tbody>
+      <tfoot>
+        <tr class="riga-totale">
+          <td colspan="2">Totale</td>
+          <td id="footTotale">€ 0,00</td>
+          <td colspan="3"></td>
+        </tr>
+      </tfoot>
+    </table>
+    <p id="vuoto" class="vuoto hidden">Nessuna attività trovata.</p>
+  </section>
+
+</main>
+
+<!-- Modale Nuova/Modifica attività -->
+<div id="modalOverlay" class="modal-overlay hidden no-print">
+  <div class="modal">
+    <h2 id="modalTitolo">Nuova attività</h2>
+    <form id="formAttivita">
+      <input type="hidden" id="fId">
+
+      <label for="fData">Data</label>
+      <input type="date" id="fData" required>
+
+      <label for="fDescrizione">Attività realizzata</label>
+      <input type="text" id="fDescrizione" placeholder="Es. Gestione Magazzino" required>
+
+      <label for="fImporto">Importo (€)</label>
+      <input type="number" id="fImporto" step="0.01" min="0" placeholder="0,00" required>
+
+      <label for="fNote">Note (facoltative)</label>
+      <textarea id="fNote" rows="2" placeholder="Note aggiuntive..."></textarea>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="fPagato">
+        Pagato
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" id="btnAnnulla" class="btn btn-outline">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modale conferma eliminazione -->
+<div id="confirmOverlay" class="modal-overlay hidden no-print">
+  <div class="modal modal-small">
+    <h2>Eliminare questa attività?</h2>
+    <p>L'operazione non è reversibile.</p>
+    <div class="modal-actions">
+      <button id="btnAnnullaElimina" class="btn btn-outline">Annulla</button>
+      <button id="btnConfermaElimina" class="btn btn-danger">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
