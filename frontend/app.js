@@ -38,6 +38,11 @@ function formattaEuro(numero) {
   );
 }
 
+// Formatta una percentuale con 2 decimali e virgola (es. 62,50%)
+function formattaPercentuale(valore) {
+  return valore.toFixed(2).replace(".", ",") + "%";
+}
+
 function formattaDataIT(isoDate) {
   if (!isoDate) return "";
   const [y, m, d] = isoDate.split("-");
@@ -222,16 +227,16 @@ async function caricaStats() {
   document.getElementById("statDaPagareNum").textContent =
     `${stats.numero_da_pagare} voci`;
 
-  // Percentuali
+  // Percentuali con 2 decimali e virgola
   const totale = stats.totale;
   if (totale > 0) {
-    const percPagato = ((stats.pagato / totale) * 100).toFixed(1);
-    const percDaPagare = ((stats.da_pagare / totale) * 100).toFixed(1);
-    document.getElementById("statPagatoPerc").textContent = `(${percPagato}%)`;
-    document.getElementById("statDaPagarePerc").textContent = `(${percDaPagare}%)`;
+    const percPagato = (stats.pagato / totale) * 100;
+    const percDaPagare = (stats.da_pagare / totale) * 100;
+    document.getElementById("statPagatoPerc").textContent = `(${formattaPercentuale(percPagato)})`;
+    document.getElementById("statDaPagarePerc").textContent = `(${formattaPercentuale(percDaPagare)})`;
   } else {
-    document.getElementById("statPagatoPerc").textContent = "(0%)";
-    document.getElementById("statDaPagarePerc").textContent = "(0%)";
+    document.getElementById("statPagatoPerc").textContent = "(0,00%)";
+    document.getElementById("statDaPagarePerc").textContent = "(0,00%)";
   }
 }
 
@@ -275,15 +280,15 @@ function aggiornaTotaleVisualizzato(dati) {
   document.getElementById("footDaPagareNum").textContent =
     `${daPagare.length} voci`;
 
-  // Percentuali per il footer
+  // Percentuali per il footer con 2 decimali e virgola
   if (somma > 0) {
-    const percPagato = ((sommaPagato / somma) * 100).toFixed(1);
-    const percDaPagare = ((sommaDaPagare / somma) * 100).toFixed(1);
-    document.getElementById("footPagatoPerc").textContent = `(${percPagato}%)`;
-    document.getElementById("footDaPagarePerc").textContent = `(${percDaPagare}%)`;
+    const percPagato = (sommaPagato / somma) * 100;
+    const percDaPagare = (sommaDaPagare / somma) * 100;
+    document.getElementById("footPagatoPerc").textContent = `(${formattaPercentuale(percPagato)})`;
+    document.getElementById("footDaPagarePerc").textContent = `(${formattaPercentuale(percDaPagare)})`;
   } else {
-    document.getElementById("footPagatoPerc").textContent = "(0%)";
-    document.getElementById("footDaPagarePerc").textContent = "(0%)";
+    document.getElementById("footPagatoPerc").textContent = "(0,00%)";
+    document.getElementById("footDaPagarePerc").textContent = "(0,00%)";
   }
 }
 
@@ -331,11 +336,11 @@ function renderGruppi(dati) {
       0,
     );
 
-    // Calcolo percentuali per questo cliente
-    let percPagato = "0%", percDaPagare = "0%";
+    // Percentuali per questo cliente con 2 decimali e virgola
+    let percPagato = "0,00%", percDaPagare = "0,00%";
     if (sommaGruppo > 0) {
-      percPagato = ((sommaPagatoGruppo / sommaGruppo) * 100).toFixed(1) + "%";
-      percDaPagare = ((sommaDaPagareGruppo / sommaGruppo) * 100).toFixed(1) + "%";
+      percPagato = formattaPercentuale((sommaPagatoGruppo / sommaGruppo) * 100);
+      percDaPagare = formattaPercentuale((sommaDaPagareGruppo / sommaGruppo) * 100);
     }
 
     const sezione = document.createElement("section");
