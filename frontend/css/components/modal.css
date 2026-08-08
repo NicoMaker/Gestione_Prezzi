@@ -1,0 +1,97 @@
+/* ---------- Modale ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+.modal {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px 30px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+}
+.modal-small {
+  max-width: 380px;
+}
+.modal h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.modal label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.83rem;
+  margin: 14px 0 6px;
+  color: var(--text-muted);
+}
+.modal input[type="text"],
+.modal input[type="date"],
+.modal input[type="number"],
+.modal select,
+.modal textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.92rem;
+  font-family: inherit;
+}
+.modal select {
+  cursor: pointer;
+  background: #fff;
+}
+.cliente-select-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.cliente-select-row select {
+  flex: 1;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 16px;
+}
+.checkbox-label input {
+  width: 18px;
+  height: 18px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+
+.hint {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin: 5px 0 0;
+}
+
+.modal-large {
+  max-width: 620px;
+}
+.modal-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.modal-header-row h2 {
+  margin: 0;
+}

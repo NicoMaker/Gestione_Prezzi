@@ -1,0 +1,31 @@
+/* ---------- Filters ---------- */
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.filtro-group {
+  display: flex;
+  gap: 6px;
+  background: #fff;
+  padding: 4px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+}
+.filtro-btn {
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-family: inherit;
+}
+.filtro-btn.active {
+  background: var(--blue);
+  color: #fff;
+}

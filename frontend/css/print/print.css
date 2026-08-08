@@ -1,0 +1,65 @@
+/* ---------- Intestazione e stili per la stampa ---------- */
+.print-header {
+  display: none;
+}
+
+/* ---------- Stampa ---------- */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .container {
+    padding: 0;
+    max-width: 100%;
+  }
+  .table-wrap {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+  .print-header {
+    display: block;
+    margin-bottom: 18px;
+  }
+  .print-header h1 {
+    margin: 0 0 4px;
+    font-size: 1.4rem;
+  }
+  .print-header p {
+    margin: 0;
+    color: #555;
+    font-size: 0.85rem;
+  }
+  .gruppo-cliente {
+    page-break-inside: avoid;
+    margin-bottom: 22px;
+  }
+  .gruppo-header {
+    padding: 6px 2px;
+  }
+  .gruppo-totale {
+    color: #000;
+  }
+  thead th {
+    background: #eee !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .riga-totale td {
+    background: #eee !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .riepilogo-visualizzato {
+    box-shadow: none;
+  }
+  .riepilogo-voce {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+  .card {
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,51 @@
+/* ---------- Combo (select ricercabile a singola scelta) ---------- */
+.combo {
+  position: relative;
+  min-width: 200px;
+}
+.combo-input {
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.88rem;
+  font-family: inherit;
+  background: #fff;
+  width: 100%;
+}
+.combo-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 50;
+  padding: 4px;
+}
+.combo-item {
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+.combo-item:hover {
+  background: var(--blue-light);
+}
+.combo-item.selezionato {
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  font-weight: 700;
+}
+.combo-item-vuoto {
+  color: var(--text-muted);
+  cursor: default;
+  font-weight: 500;
+}
+.combo-item-vuoto:hover {
+  background: none;
+}
