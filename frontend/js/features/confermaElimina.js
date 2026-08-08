@@ -7,12 +7,10 @@ const confirmOverlay = document.getElementById("confirmOverlay");
 let idDaEliminare = null;
 
 export function initConfermaElimina() {
-  document
-    .getElementById("btnAnnullaElimina")
-    .addEventListener("click", () => {
-      idDaEliminare = null;
-      confirmOverlay.classList.add("hidden");
-    });
+  document.getElementById("btnAnnullaElimina").addEventListener("click", () => {
+    idDaEliminare = null;
+    confirmOverlay.classList.add("hidden");
+  });
 
   document
     .getElementById("btnConfermaElimina")

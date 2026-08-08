@@ -13,7 +13,11 @@ export const state = {
 // dipendenze circolari tra le feature.
 const actions = {};
 
-export function registraAzioni({ aggiornaTutto, caricaTabella, caricaClienti }) {
+export function registraAzioni({
+  aggiornaTutto,
+  caricaTabella,
+  caricaClienti,
+}) {
   actions.aggiornaTutto = aggiornaTutto;
   actions.caricaTabella = caricaTabella;
   actions.caricaClienti = caricaClienti;

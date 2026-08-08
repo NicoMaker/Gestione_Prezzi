@@ -19,7 +19,9 @@ const clientiRepository = {
   },
 
   crea(nome) {
-    const result = db.prepare(`INSERT INTO clienti (nome) VALUES (?)`).run(nome);
+    const result = db
+      .prepare(`INSERT INTO clienti (nome) VALUES (?)`)
+      .run(nome);
     return this.trovaPerId(result.lastInsertRowid);
   },
 

@@ -73,12 +73,22 @@ const attivitaRepository = {
     const somma = (sql) => db.prepare(sql).get(...p);
 
     return {
-      totale: somma(`SELECT COALESCE(SUM(importo),0) as tot FROM attivita${where}`).tot,
-      pagato: somma(`SELECT COALESCE(SUM(importo),0) as tot FROM attivita WHERE pagato = 1${and}`).tot,
-      da_pagare: somma(`SELECT COALESCE(SUM(importo),0) as tot FROM attivita WHERE pagato = 0${and}`).tot,
+      totale: somma(
+        `SELECT COALESCE(SUM(importo),0) as tot FROM attivita${where}`,
+      ).tot,
+      pagato: somma(
+        `SELECT COALESCE(SUM(importo),0) as tot FROM attivita WHERE pagato = 1${and}`,
+      ).tot,
+      da_pagare: somma(
+        `SELECT COALESCE(SUM(importo),0) as tot FROM attivita WHERE pagato = 0${and}`,
+      ).tot,
       numero_totale: somma(`SELECT COUNT(*) as n FROM attivita${where}`).n,
-      numero_pagati: somma(`SELECT COUNT(*) as n FROM attivita WHERE pagato = 1${and}`).n,
-      numero_da_pagare: somma(`SELECT COUNT(*) as n FROM attivita WHERE pagato = 0${and}`).n,
+      numero_pagati: somma(
+        `SELECT COUNT(*) as n FROM attivita WHERE pagato = 1${and}`,
+      ).n,
+      numero_da_pagare: somma(
+        `SELECT COUNT(*) as n FROM attivita WHERE pagato = 0${and}`,
+      ).n,
     };
   },
 };

@@ -19,9 +19,7 @@ export function initModaleAttivita({ combo, apriClienti }) {
   document
     .getElementById("btnNuovo")
     .addEventListener("click", () => apriModaleNuovo());
-  document
-    .getElementById("btnAnnulla")
-    .addEventListener("click", chiudiModale);
+  document.getElementById("btnAnnulla").addEventListener("click", chiudiModale);
   modalOverlay.addEventListener("click", (e) => {
     if (e.target === modalOverlay) chiudiModale();
   });

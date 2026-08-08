@@ -6,10 +6,14 @@ import { formattaEuro, formattaPercentuale } from "../utils/format.js";
 export async function caricaStats() {
   const stats = await statsApi.carica(state.filtroClienteIds);
 
-  document.getElementById("statTotale").textContent = formattaEuro(stats.totale);
+  document.getElementById("statTotale").textContent = formattaEuro(
+    stats.totale,
+  );
   document.getElementById("statTotaleNum").textContent =
     `${stats.numero_totale} voci`;
-  document.getElementById("statPagato").textContent = formattaEuro(stats.pagato);
+  document.getElementById("statPagato").textContent = formattaEuro(
+    stats.pagato,
+  );
   document.getElementById("statPagatoNum").textContent =
     `${stats.numero_pagati} voci`;
   document.getElementById("statDaPagare").textContent = formattaEuro(
