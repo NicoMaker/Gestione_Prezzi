@@ -7,8 +7,10 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   background: var(--paper);
-  background-image:
-    linear-gradient(rgba(169, 181, 161, 0.35) 1px, transparent 1px);
+  background-image: linear-gradient(
+    rgba(169, 181, 161, 0.35) 1px,
+    transparent 1px
+  );
   background-size: 100% 42px;
   background-attachment: local;
   color: var(--ink);
