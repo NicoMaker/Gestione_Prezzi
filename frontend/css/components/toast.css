@@ -4,10 +4,10 @@
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: #111827;
-  color: #fff;
-  padding: 12px 22px;
-  border-radius: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 11px 22px;
+  border-radius: var(--radius-sm);
   font-size: 0.88rem;
   font-weight: 500;
   z-index: 200;

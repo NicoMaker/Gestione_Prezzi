@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestione Attività &amp; Pagamenti</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <!-- Base -->
@@ -37,7 +38,14 @@
     <div class="topbar no-print">
       <div class="topbar-inner">
         <div class="brand">
-          <span class="brand-logo">📋</span>
+          <span class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="21" cy="21" r="19" stroke="currentColor" stroke-width="2" />
+              <circle cx="21" cy="21" r="14.5" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 3" />
+              <path d="M14 24.5c1.6 2 4.2 3 7 3s5.4-1 7-3M14 17.5c1.6-2 4.2-3 7-3s5.4 1 7 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <path d="M21 13.5v15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </span>
           <div>
             <h1>Gestione Attività</h1>
             <span class="brand-sub">Attività &amp; pagamenti per cliente</span>

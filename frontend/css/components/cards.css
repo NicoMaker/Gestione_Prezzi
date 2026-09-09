@@ -1,54 +1,42 @@
-/* ---------- Stat cards ---------- */
+/* ---------- Striscia riepilogativa (ex stat cards) ---------- */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin-bottom: 22px;
-}
-.card {
-  background: var(--card-bg);
+  background: var(--card);
+  border: 1.5px solid var(--ink);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 20px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border: 1px solid var(--border);
-  position: relative;
+  margin-bottom: 22px;
   overflow: hidden;
 }
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
+.card {
+  padding: 16px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-left: 1px solid var(--rule);
 }
-.card-tot::before {
-  background: var(--blue);
-}
-.card-pagato::before {
-  background: var(--green);
-}
-.card-dapagare::before {
-  background: var(--amber);
+.card:first-child {
+  border-left: none;
 }
 .card-label {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-weight: 600;
 }
 .card-value {
-  font-size: 1.85rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.card-pagato .card-value {
+  color: var(--primary);
+}
+.card-dapagare .card-value {
+  color: var(--due);
 }
 .card-sub {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -56,10 +44,7 @@
   flex-wrap: wrap;
 }
 .percentuale {
-  font-size: 0.75rem;
-  background: #f1f2f6;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-weight: 700;
-  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-soft);
 }
