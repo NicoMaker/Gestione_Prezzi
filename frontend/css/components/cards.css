@@ -1,43 +1,65 @@
-/* ---------- Striscia riepilogativa (ex stat cards) ---------- */
+/* ---------- Riepilogo in alto ---------- */
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  background: var(--card);
-  border: 1.5px solid var(--ink);
+  grid-template-columns: 1.25fr 1fr 1fr;
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  margin-bottom: 22px;
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 .card {
-  padding: 16px 22px;
+  padding: 20px 24px 22px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  border-left: 1px solid var(--rule);
+  gap: 6px;
+  border-left: 1px solid var(--line);
+  min-width: 0;
 }
 .card:first-child {
   border-left: none;
 }
 .card-label {
-  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
   color: var(--ink-soft);
-  font-weight: 600;
+  font-weight: 500;
+}
+.card-pagato .card-label::before,
+.card-dapagare .card-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.card-pagato .card-label::before {
+  color: var(--paid);
+}
+.card-dapagare .card-label::before {
+  color: var(--due);
 }
 .card-value {
-  font-size: 1.7rem;
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.card-tot .card-value {
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
 }
 .card-pagato .card-value {
-  color: var(--primary);
+  color: var(--paid);
 }
 .card-dapagare .card-value {
   color: var(--due);
 }
 .card-sub {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--ink-soft);
-  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -45,6 +67,37 @@
 }
 .percentuale {
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   color: var(--ink-soft);
+}
+
+/* Barra pagato / da pagare */
+.split-bar {
+  height: 8px;
+  margin: 12px 2px 24px;
+  border-radius: 999px;
+  background: var(--due-soft);
+  overflow: hidden;
+}
+.split-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--paid);
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (max-width: 760px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding: 16px 20px;
+  }
+  .card:first-child {
+    border-top: none;
+  }
 }

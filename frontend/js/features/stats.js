@@ -30,8 +30,16 @@ export async function caricaStats() {
       `(${formattaPercentuale(percPagato)})`;
     document.getElementById("statDaPagarePerc").textContent =
       `(${formattaPercentuale(percDaPagare)})`;
+    aggiornaBarra((stats.pagato / stats.totale) * 100);
   } else {
     document.getElementById("statPagatoPerc").textContent = "(0,00%)";
     document.getElementById("statDaPagarePerc").textContent = "(0,00%)";
+    aggiornaBarra(0);
   }
+}
+
+// Barra di avanzamento pagato / da pagare (solo grafica)
+function aggiornaBarra(percPagato) {
+  const barra = document.getElementById("statBarPagato");
+  if (barra) barra.style.width = `${Math.max(0, Math.min(100, percPagato))}%`;
 }

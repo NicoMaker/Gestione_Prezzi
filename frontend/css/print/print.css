@@ -5,11 +5,29 @@
 
 /* ---------- Stampa ---------- */
 @media print {
+  /* La stampa è sempre su carta chiara, anche con tema scuro attivo */
+  :root {
+    --bg: #fff;
+    --surface: #fff;
+    --surface-2: #f2f2f2;
+    --surface-3: #eee;
+    --ink: #111;
+    --ink-soft: #444;
+    --line: #ccc;
+    --line-strong: #bbb;
+    --paid: #14804f;
+    --paid-ink: #0c5a36;
+    --paid-soft: #dcf3e6;
+    --due: #b45f06;
+    --due-ink: #86470a;
+    --due-soft: #fcebcd;
+  }
   .no-print {
     display: none !important;
   }
   body {
     background: #fff;
+    color: #111;
   }
   .container {
     padding: 0;
@@ -17,7 +35,6 @@
   }
   .table-wrap {
     box-shadow: none;
-    border: 1px solid #ccc;
   }
   .print-header {
     display: block;
@@ -34,11 +51,14 @@
     font-size: 0.85rem;
   }
   .gruppo-cliente {
+    break-inside: avoid;
     page-break-inside: avoid;
     margin-bottom: 22px;
+    box-shadow: none;
+    border: 1px solid #ccc;
   }
   .gruppo-header {
-    padding: 6px 2px;
+    padding: 8px 10px;
   }
   .gruppo-totale {
     color: #000;
@@ -53,12 +73,15 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  tbody tr:hover td {
+    background: transparent;
+  }
   .riepilogo-visualizzato {
     box-shadow: none;
+    border: 1px solid #ccc;
   }
   .riepilogo-voce {
     box-shadow: none;
-    border: 1px solid #ccc;
   }
   .card {
     box-shadow: none;

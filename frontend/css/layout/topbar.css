@@ -1,7 +1,9 @@
 /* ---------- Topbar ---------- */
 .topbar {
-  background: var(--card);
-  border-bottom: 2px solid var(--ink);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--line);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -9,25 +11,25 @@
 .topbar-inner {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 12px;
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 .brand-logo {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary);
+  color: var(--brand);
   flex-shrink: 0;
 }
 .brand-logo svg {
@@ -35,19 +37,31 @@
   height: 100%;
 }
 .topbar h1 {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   margin: 0;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 700;
 }
 .brand-sub {
-  font-size: 0.76rem;
+  display: block;
+  font-size: 0.78rem;
   color: var(--ink-soft);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 400;
 }
 .topbar-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+@media (max-width: 560px) {
+  .topbar-inner {
+    padding: 10px 14px;
+  }
+  .topbar-actions {
+    width: 100%;
+  }
+  .topbar-actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
 }

@@ -1,84 +1,127 @@
 /* ---------- Table ---------- */
 .table-wrap {
-  background: var(--card);
-  border-radius: var(--radius);
+  background: var(--surface);
   overflow-x: auto;
-  border: 1px solid var(--rule-strong);
+  border-top: 1px solid var(--line);
 }
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
 }
 thead th {
   text-align: left;
-  padding: 11px 16px;
-  background: var(--paper-deep);
-  border-bottom: 1.5px solid var(--rule-strong);
-  font-size: 0.76rem;
+  padding: 10px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8rem;
   color: var(--ink-soft);
   font-weight: 600;
+  white-space: nowrap;
 }
 tbody td {
-  padding: 11px 16px;
-  border-bottom: 1px solid var(--rule);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
   vertical-align: middle;
 }
-tbody td:nth-child(1),
+
+/* Data e importo: cifre tabellari, importo allineato a destra */
+tbody td:nth-child(1) {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+tbody td:nth-child(3),
+thead th:nth-child(3) {
+  text-align: right;
+}
 tbody td:nth-child(3) {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
 }
 tbody tr:last-child td {
   border-bottom: none;
 }
-tbody tr:hover {
-  background: var(--paper-deep);
+tbody tr:hover td {
+  background: var(--surface-2);
+}
+
+/* Barra di stato a sinistra della riga */
+tbody tr.riga-pagata td:first-child {
+  box-shadow: inset 3px 0 0 var(--paid);
+}
+tbody tr.riga-da-pagare td:first-child {
+  box-shadow: inset 3px 0 0 var(--due);
 }
 tbody tr.riga-pagata td:nth-child(3) {
-  color: var(--primary-dark);
+  color: var(--paid-ink);
 }
 tbody tr.riga-da-pagare td:nth-child(3) {
-  color: var(--due);
+  color: var(--due-ink);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 11px;
-  border-radius: var(--radius-sm);
-  font-size: 0.76rem;
+  gap: 7px;
+  padding: 4px 11px 4px 9px;
+  border-radius: 999px;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
   font-family: var(--font-sans);
+  white-space: nowrap;
+  transition: filter 0.15s ease;
+}
+.badge:hover {
+  filter: brightness(0.95);
 }
 .badge-pagato {
-  background: var(--primary-soft);
-  color: var(--primary-dark);
-  border-color: var(--primary);
+  background: var(--paid-soft);
+  color: var(--paid-ink);
+}
+.badge-pagato .dot {
+  background: var(--paid);
 }
 .badge-da-pagare {
   background: var(--due-soft);
-  color: var(--due);
-  border-color: var(--due);
+  color: var(--due-ink);
+}
+.badge-da-pagare .dot {
+  background: var(--due);
 }
 
 .azioni {
   display: flex;
-  gap: 4px;
+  gap: 2px;
 }
 .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 5px 7px;
-  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  border-radius: 8px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .icon-btn:hover {
-  background: var(--paper-deep);
+  background: var(--surface-3);
+  color: var(--ink);
+}
+.icon-btn-danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 .icon-btn-disabled {
   opacity: 0.35;
@@ -86,24 +129,125 @@ tbody tr.riga-da-pagare td:nth-child(3) {
 }
 .icon-btn-disabled:hover {
   background: none;
+  color: var(--ink-soft);
 }
 
 .riga-totale td {
+  padding: 12px 16px;
   font-weight: 600;
-  background: var(--paper-deep);
-  font-size: 0.88rem;
-  border-top: 1.5px solid var(--rule-strong);
+  background: var(--surface-2);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.riga-totale td:nth-child(2) {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .vuoto {
   text-align: center;
-  padding: 50px;
+  padding: 56px 20px;
   color: var(--ink-soft);
-  font-weight: 500;
+  background: var(--surface);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
 }
 
 .note-cell {
   color: var(--ink-soft);
-  font-size: 0.84rem;
-  max-width: 200px;
+  font-size: 0.86rem;
+  max-width: 220px;
+}
+
+/* Righe a scheda su schermi stretti */
+@media (max-width: 640px) {
+  .table-wrap {
+    overflow-x: visible;
+  }
+  table,
+  tbody,
+  tfoot {
+    display: block;
+  }
+  thead {
+    display: none;
+  }
+  tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: center;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+  tbody td {
+    padding: 0;
+    border: none;
+  }
+  tbody tr:hover td {
+    background: transparent;
+  }
+  tbody tr.riga-pagata {
+    box-shadow: inset 3px 0 0 var(--paid);
+  }
+  tbody tr.riga-da-pagare {
+    box-shadow: inset 3px 0 0 var(--due);
+  }
+  tbody tr.riga-pagata td:first-child,
+  tbody tr.riga-da-pagare td:first-child {
+    box-shadow: none;
+  }
+  tbody td:nth-child(2) {
+    grid-column: 1;
+    grid-row: 1;
+    font-weight: 500;
+  }
+  tbody td:nth-child(3) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  tbody td:nth-child(1) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  tbody td:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+  tbody td.note-cell {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    max-width: none;
+  }
+  tbody td.note-cell:empty {
+    display: none;
+  }
+  tbody td:nth-child(6) {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    justify-self: end;
+  }
+  tfoot tr.riga-totale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+  }
+  .riga-totale td {
+    padding: 12px 0;
+    border-top: none;
+    background: transparent;
+  }
+  .riga-totale td:nth-child(3) {
+    display: none;
+  }
+  tfoot {
+    background: var(--surface-2);
+    border-top: 1px solid var(--line);
+  }
 }

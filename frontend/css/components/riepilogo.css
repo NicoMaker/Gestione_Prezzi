@@ -1,21 +1,24 @@
 /* ---------- Riepilogo totale visualizzato (in basso) ---------- */
 .riepilogo-visualizzato {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  background: var(--card);
-  border: 1.5px solid var(--ink);
+  grid-template-columns: 1.25fr 1fr 1fr;
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: var(--shadow);
   margin-top: 4px;
   overflow: hidden;
 }
 .riepilogo-voce {
-  padding: 14px 18px;
+  padding: 16px 22px;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
-  align-items: center;
+  align-items: baseline;
   column-gap: 10px;
-  border-left: 1px solid var(--rule);
+  row-gap: 2px;
+  border-left: 1px solid var(--line);
+  min-width: 0;
 }
 .riepilogo-voce:first-child {
   border-left: none;
@@ -25,34 +28,64 @@
 }
 .riepilogo-label {
   grid-column: 1 / 3;
-  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
   color: var(--ink-soft);
-  font-weight: 600;
+  font-weight: 500;
+}
+.riepilogo-pagato .riepilogo-label::before,
+.riepilogo-dapagare .riepilogo-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.riepilogo-pagato .riepilogo-label::before {
+  background: var(--paid);
+}
+.riepilogo-dapagare .riepilogo-label::before {
+  background: var(--due);
 }
 .riepilogo-valore {
   grid-column: 1 / 2;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
 }
 .riepilogo-num {
   grid-column: 2 / 3;
   justify-self: end;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--ink-soft);
-  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-mono);
 }
 .riepilogo-pagato .riepilogo-valore {
-  color: var(--primary);
+  color: var(--paid);
 }
 .riepilogo-dapagare .riepilogo-valore {
   color: var(--due);
 }
 .riepilogo-num .percentuale {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   color: var(--ink-soft);
+}
+
+@media (max-width: 760px) {
+  .riepilogo-visualizzato {
+    grid-template-columns: 1fr;
+  }
+  .riepilogo-voce {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding: 14px 18px;
+  }
+  .riepilogo-voce:first-child {
+    border-top: none;
+  }
 }

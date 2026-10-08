@@ -1,36 +1,94 @@
-/* ---------- Variabili di tema — registro contabile ---------- */
+/* ---------- Variabili di tema ---------- */
 :root {
-  /* Inchiostro e carta */
-  --ink: #1e2a1f;
-  --ink-soft: #57604f;
-  --paper: #eff3ec;
-  --paper-deep: #e4eae1;
-  --card: #fbfcfa;
-  --rule: #c9d2c3;
-  --rule-strong: #a9b5a1;
+  /* Superfici */
+  --bg: #f1f3f0;
+  --surface: #ffffff;
+  --surface-2: #f7f8f6;
+  --surface-3: #eceee9;
 
-  /* Stato: pagato (verde inchiostro) */
-  --primary: #2f5233;
-  --primary-dark: #23401f;
-  --primary-soft: #dce8da;
+  /* Testo */
+  --ink: #121a15;
+  --ink-soft: #56625a;
+  --ink-faint: #8a958d;
 
-  /* Stato: da pagare (ocra) */
-  --due: #8a5a15;
-  --due-soft: #f1e3c6;
+  /* Linee */
+  --line: #e1e5df;
+  --line-strong: #c9d0c6;
+
+  /* Brand (verde bosco) */
+  --brand: #0f3d2e;
+  --brand-hover: #0a2c21;
+  --brand-soft: #e0eee7;
+  --brand-ink: #ffffff;
+
+  /* Stato: pagato */
+  --paid: #14804f;
+  --paid-soft: #dcf3e6;
+  --paid-ink: #0c5a36;
+
+  /* Stato: da pagare */
+  --due: #b45f06;
+  --due-soft: #fcebcd;
+  --due-ink: #86470a;
 
   /* Azioni distruttive */
-  --danger: #7a2e2a;
-  --danger-soft: #f3dedc;
+  --danger: #b42318;
+  --danger-hover: #8f1c13;
+  --danger-soft: #fbe4e1;
 
-  /* Raggio e ombre — minime, la struttura viene dalle righe */
-  --radius: 8px;
-  --radius-sm: 5px;
-  --shadow: 0 1px 2px rgba(30, 42, 31, 0.07);
-  --shadow-lg: 0 16px 32px rgba(24, 32, 22, 0.18);
+  --focus: #2f6fe4;
+
+  /* Forma */
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 1px 2px rgba(18, 26, 21, 0.05), 0 1px 1px rgba(18, 26, 21, 0.03);
+  --shadow-lg: 0 24px 48px -16px rgba(12, 20, 15, 0.35);
+  --overlay: rgba(10, 16, 12, 0.55);
 
   /* Tipografia */
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --font-sans:
-    "IBM Plex Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  --font-sans: "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  --font-mono: "Geist Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+/* Tema scuro automatico, segue le impostazioni del sistema */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d120f;
+    --surface: #151b17;
+    --surface-2: #1a211c;
+    --surface-3: #232b25;
+
+    --ink: #edf1ee;
+    --ink-soft: #a5b0a8;
+    --ink-faint: #75817a;
+
+    --line: #26302a;
+    --line-strong: #37433b;
+
+    --brand: #4fc58e;
+    --brand-hover: #6cd6a3;
+    --brand-soft: rgba(79, 197, 142, 0.14);
+    --brand-ink: #07140d;
+
+    --paid: #4fc58e;
+    --paid-soft: rgba(79, 197, 142, 0.14);
+    --paid-ink: #7ddbae;
+
+    --due: #f0a03c;
+    --due-soft: rgba(240, 160, 60, 0.15);
+    --due-ink: #f6bd6e;
+
+    --danger: #ef6b5c;
+    --danger-hover: #ff8576;
+    --danger-soft: rgba(239, 107, 92, 0.15);
+
+    --focus: #6b9bff;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.75);
+    --overlay: rgba(0, 0, 0, 0.65);
+  }
 }

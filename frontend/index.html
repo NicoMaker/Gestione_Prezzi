@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>Gestione Attività &amp; Pagamenti</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <!-- Base -->
@@ -79,10 +80,10 @@
           </div>
         </div>
         <div class="topbar-actions">
-          <button id="btnClienti" class="btn btn-outline">👥 Clienti</button>
-          <button id="btnStampa" class="btn btn-outline">🖨️ Stampa</button>
+          <button id="btnClienti" class="btn btn-outline"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M18 14.9c1.9.7 3.1 2.4 3.5 5.1"/></svg>Clienti</button>
+          <button id="btnStampa" class="btn btn-outline"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/></svg>Stampa</button>
           <button id="btnNuovo" class="btn btn-primary">
-            + Nuova attività
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuova attività
           </button>
         </div>
       </div>
@@ -113,15 +114,16 @@
           </span>
         </div>
       </section>
+      <div class="split-bar no-print" role="img" aria-label="Quota pagata sul totale">
+        <span id="statBarPagato" class="split-bar-fill"></span>
+      </div>
 
       <!-- Filtri -->
       <section class="filters no-print">
         <div class="filtro-group" id="filtroStato">
           <button class="filtro-btn active" data-filtro="tutti">Tutti</button>
-          <button class="filtro-btn" data-filtro="pagati">✅ Pagati</button>
-          <button class="filtro-btn" data-filtro="da_pagare">
-            ⏳ Da pagare
-          </button>
+          <button class="filtro-btn" data-filtro="pagati">Pagati</button>
+          <button class="filtro-btn" data-filtro="da_pagare">Da pagare</button>
         </div>
         <div class="multiselect" id="multiselectFiltroCliente">
           <button
@@ -129,15 +131,15 @@
             class="combo-input multiselect-toggle"
             id="multiselectFiltroClienteToggle"
           >
-            <span id="multiselectFiltroClienteLabel">👥 Tutti i clienti</span>
-            <span class="multiselect-caret">▾</span>
+            <span id="multiselectFiltroClienteLabel">Tutti i clienti</span>
+            <svg class="multiselect-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="combo-list hidden" id="multiselectFiltroClienteList">
             <input
               type="text"
               class="multiselect-search"
               id="multiselectFiltroClienteSearch"
-              placeholder="🔎 Cerca cliente..."
+              placeholder="Cerca cliente..."
               autocomplete="off"
             />
             <div class="multiselect-actions">
@@ -223,7 +225,7 @@
         </div>
         <div class="riepilogo-voce riepilogo-pagato">
           <span class="riepilogo-dot"></span>
-          <span class="riepilogo-label">✅ Pagato</span>
+          <span class="riepilogo-label">Pagato</span>
           <span class="riepilogo-valore" id="footPagato">€ 0,00</span>
           <span class="riepilogo-num">
             <span id="footPagatoNum">0 voci</span>
@@ -232,7 +234,7 @@
         </div>
         <div class="riepilogo-voce riepilogo-dapagare">
           <span class="riepilogo-dot"></span>
-          <span class="riepilogo-label">⏳ Da pagare</span>
+          <span class="riepilogo-label">Da pagare</span>
           <span class="riepilogo-valore" id="footDaPagare">€ 0,00</span>
           <span class="riepilogo-num">
             <span id="footDaPagareNum">0 voci</span>
@@ -339,7 +341,7 @@
     <div id="clientiOverlay" class="modal-overlay hidden no-print">
       <div class="modal modal-large">
         <div class="modal-header-row">
-          <h2>👥 Gestione clienti</h2>
+          <h2>Gestione clienti</h2>
         </div>
 
         <form id="formClienteNuovo" class="cliente-form-nuovo">
@@ -358,7 +360,7 @@
           type="text"
           id="cercaClienteGestione"
           class="search-input-full"
-          placeholder="🔎 Cerca cliente..."
+          placeholder="Cerca cliente..."
         />
 
         <div id="clientiLista" class="clienti-lista"></div>

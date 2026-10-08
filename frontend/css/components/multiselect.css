@@ -1,7 +1,7 @@
 /* ---------- Filtro clienti multi-selezione ---------- */
 .multiselect {
   position: relative;
-  min-width: 220px;
+  min-width: 230px;
 }
 .multiselect-toggle {
   display: flex;
@@ -16,37 +16,42 @@
 }
 .multiselect-caret {
   color: var(--ink-soft);
-  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .multiselect .combo-list {
-  width: 280px;
+  width: 300px;
+  max-width: calc(100vw - 24px);
   padding: 8px;
 }
 .multiselect-search {
   width: 100%;
-  padding: 8px 10px;
+  min-height: 38px;
+  padding: 0 12px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--rule-strong);
-  font-size: 0.86rem;
+  border: 1px solid var(--line-strong);
+  font-size: 0.9rem;
   font-family: var(--font-sans);
   margin-bottom: 6px;
-  background: var(--paper);
+  background: var(--surface-2);
   color: var(--ink);
+}
+.multiselect-search:focus {
+  outline: none;
+  border-color: var(--focus);
 }
 .multiselect-actions {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   padding: 2px 4px 8px;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--line);
   margin-bottom: 6px;
 }
 .multiselect-link {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--primary);
-  font-size: 0.78rem;
+  color: var(--brand);
+  font-size: 0.8rem;
   font-weight: 600;
   padding: 0;
   font-family: var(--font-sans);
@@ -55,33 +60,32 @@
   text-decoration: underline;
 }
 .multiselect-opzioni {
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
 }
 .multiselect-item {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   padding: 8px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 500;
 }
 .multiselect-item:hover {
-  background: var(--paper-deep);
+  background: var(--surface-2);
 }
 .multiselect-item input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
   cursor: pointer;
-  accent-color: var(--primary);
+  accent-color: var(--brand);
 }
 .multiselect-item-vuoto {
   color: var(--ink-soft);
   cursor: default;
-  font-weight: 500;
   padding: 8px;
 }
 .multiselect-item-vuoto:hover {

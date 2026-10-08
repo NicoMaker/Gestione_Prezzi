@@ -9,6 +9,11 @@ import {
 } from "../utils/format.js";
 import { mostraToast } from "../utils/toast.js";
 
+const ICONA_MODIFICA =
+  '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="m14.5 7.5 3 3"/></svg>';
+const ICONA_ELIMINA =
+  '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
+
 const contenitoreGruppi = document.getElementById("contenitoreGruppi");
 const vuotoMsg = document.getElementById("vuoto");
 
@@ -132,8 +137,8 @@ function creaSezioneGruppo(gruppo) {
     <div class="gruppo-header">
       <h3>${escapeHtml(gruppo.nome)}</h3>
       <span class="gruppo-conteggio">${gruppo.righe.length} attività</span>
-      <span class="gruppo-chip gruppo-chip-pagato" title="Pagato">✅ ${formattaEuro(sommaPagatoGruppo)} <small>(${pagatiGruppo.length})</small> <span class="gruppo-perc">${percPagato}</span></span>
-      <span class="gruppo-chip gruppo-chip-dapagare" title="Da pagare">⏳ ${formattaEuro(sommaDaPagareGruppo)} <small>(${daPagareGruppo.length})</small> <span class="gruppo-perc">${percDaPagare}</span></span>
+      <span class="gruppo-chip gruppo-chip-pagato" title="Pagato"><i class="dot" aria-hidden="true"></i>${formattaEuro(sommaPagatoGruppo)} <small>(${pagatiGruppo.length})</small> <span class="gruppo-perc">${percPagato}</span></span>
+      <span class="gruppo-chip gruppo-chip-dapagare" title="Da pagare"><i class="dot" aria-hidden="true"></i>${formattaEuro(sommaDaPagareGruppo)} <small>(${daPagareGruppo.length})</small> <span class="gruppo-perc">${percDaPagare}</span></span>
       <span class="gruppo-totale">${formattaEuro(sommaGruppo)}</span>
     </div>
     <div class="table-wrap">
@@ -176,14 +181,14 @@ function creaRiga(riga) {
     <td>${formattaEuro(riga.importo)}</td>
     <td>
       <button class="badge ${riga.pagato ? "badge-pagato" : "badge-da-pagare"}" data-toggle="${riga.id}" title="Clicca per cambiare stato">
-        ${riga.pagato ? "✅ Pagato" : "⏳ Da pagare"}
+        <i class="dot" aria-hidden="true"></i>${riga.pagato ? "Pagato" : "Da pagare"}
       </button>
     </td>
     <td class="no-print note-cell">${escapeHtml(riga.note || "")}</td>
     <td class="no-print">
       <div class="azioni">
-        <button class="icon-btn" data-modifica="${riga.id}" title="Modifica">✏️</button>
-        <button class="icon-btn" data-elimina="${riga.id}" title="Elimina">🗑️</button>
+        <button class="icon-btn" data-modifica="${riga.id}" title="Modifica" aria-label="Modifica attività">${ICONA_MODIFICA}</button>
+        <button class="icon-btn icon-btn-danger" data-elimina="${riga.id}" title="Elimina" aria-label="Elimina attività">${ICONA_ELIMINA}</button>
       </div>
     </td>
   `;

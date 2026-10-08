@@ -1,61 +1,78 @@
 /* ---------- Gruppi cliente ---------- */
 .gruppo-cliente {
-  margin-bottom: 26px;
+  margin-bottom: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 .gruppo-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 2px 10px;
+  padding: 16px 20px;
   flex-wrap: wrap;
-  border-bottom: 1.5px solid var(--rule-strong);
-  margin-bottom: 10px;
 }
 .gruppo-header h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 .gruppo-conteggio {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--ink-soft);
-  font-weight: 500;
 }
 .gruppo-chip {
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 600;
   padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-family: var(--font-mono);
 }
 .gruppo-chip small {
   font-weight: 500;
-  opacity: 0.8;
+  opacity: 0.85;
   font-family: var(--font-sans);
 }
 .gruppo-perc {
-  font-size: 0.7rem;
-  opacity: 0.75;
+  font-size: 0.72rem;
+  opacity: 0.8;
   font-family: var(--font-sans);
 }
 .gruppo-chip-pagato {
-  background: var(--primary-soft);
-  color: var(--primary-dark);
-  border-color: var(--primary);
+  background: var(--paid-soft);
+  color: var(--paid-ink);
+}
+.gruppo-chip-pagato .dot {
+  background: var(--paid);
 }
 .gruppo-chip-dapagare {
   background: var(--due-soft);
-  color: var(--due);
-  border-color: var(--due);
+  color: var(--due-ink);
+}
+.gruppo-chip-dapagare .dot {
+  background: var(--due);
 }
 .gruppo-totale {
   margin-left: auto;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--ink);
+}
+
+@media (max-width: 560px) {
+  .gruppo-header {
+    padding: 14px 14px 12px;
+  }
+  .gruppo-totale {
+    margin-left: 0;
+    width: 100%;
+  }
 }

@@ -26,14 +26,14 @@ export function creaMultiSelectCliente({
 
   function aggiornaEtichetta() {
     if (selezionati.length === 0) {
-      label.textContent = "👥 Tutti i clienti";
+      label.textContent = "Tutti i clienti";
     } else if (selezionati.length === 1) {
       const c = state.clientiCorrenti.find(
         (c) => String(c.id) === String(selezionati[0]),
       );
-      label.textContent = "👤 " + (c ? c.nome : "1 cliente");
+      label.textContent = c ? c.nome : "1 cliente";
     } else {
-      label.textContent = `👥 ${selezionati.length} clienti selezionati`;
+      label.textContent = `${selezionati.length} clienti selezionati`;
     }
   }
 

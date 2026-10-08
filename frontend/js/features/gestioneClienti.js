@@ -64,7 +64,7 @@ async function renderClientiLista() {
     div.innerHTML = `
       <input type="text" class="cliente-nome-input" data-id="${c.id}" value="${escapeHtml(c.nome)}">
       <span class="cliente-num">${c.num_attivita} attività</span>
-      <button class="icon-btn ${haAttivita ? "icon-btn-disabled" : ""}" data-elimina-cliente="${c.id}" title="${haAttivita ? "Non eliminabile: ha attività collegate" : "Elimina cliente"}">🗑️</button>
+      <button class="icon-btn ${haAttivita ? "icon-btn-disabled" : ""}" data-elimina-cliente="${c.id}" title="${haAttivita ? "Non eliminabile: ha attività collegate" : "Elimina cliente"}" aria-label="Elimina cliente"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
     `;
     clientiLista.appendChild(div);
   }
@@ -82,7 +82,7 @@ async function onNuovoCliente(e) {
     await renderClientiLista();
   } else {
     const err = await res.json();
-    mostraToast("⚠️ " + (err.errore || "Errore creazione cliente"));
+    mostraToast("" + (err.errore || "Errore creazione cliente"));
   }
 }
 
@@ -108,6 +108,6 @@ async function onEliminaCliente(e) {
     aggiornaTutto();
   } else {
     const err = await res.json();
-    mostraToast("⚠️ " + (err.errore || "Impossibile eliminare il cliente"));
+    mostraToast("" + (err.errore || "Impossibile eliminare il cliente"));
   }
 }

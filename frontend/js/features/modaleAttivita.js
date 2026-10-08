@@ -72,14 +72,14 @@ async function onSubmit(e) {
 
   const importoNumerico = parseImportoIT(fImporto.value);
   if (isNaN(importoNumerico) || importoNumerico < 0) {
-    mostraToast("⚠️ Importo non valido. Es: 1.000,00 oppure 50,00");
+    mostraToast("Importo non valido. Es: 1.000,00 oppure 50,00");
     fImporto.focus();
     return;
   }
 
   const clienteId = comboFormCliente.getValore();
   if (!clienteId) {
-    mostraToast("⚠️ Seleziona un cliente");
+    mostraToast("Seleziona un cliente");
     return;
   }
 

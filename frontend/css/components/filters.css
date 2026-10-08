@@ -1,32 +1,52 @@
 /* ---------- Filters ---------- */
 .filters {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
   align-items: center;
   margin-bottom: 22px;
 }
+
+/* Controllo segmentato: Tutti / Pagati / Da pagare */
 .filtro-group {
-  display: flex;
+  display: inline-flex;
   gap: 2px;
-  border-bottom: 1.5px solid var(--rule-strong);
+  padding: 3px;
+  background: var(--surface-3);
+  border-radius: 11px;
 }
 .filtro-btn {
   background: transparent;
   border: none;
-  border-bottom: 2.5px solid transparent;
-  margin-bottom: -1.5px;
-  padding: 8px 14px;
+  border-radius: 8px;
+  min-height: 34px;
+  padding: 0 14px;
   cursor: pointer;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--ink-soft);
   font-family: var(--font-sans);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .filtro-btn:hover {
   color: var(--ink);
 }
 .filtro-btn.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 760px) {
+  .filtro-group {
+    width: 100%;
+  }
+  .filtro-btn {
+    flex: 1;
+  }
+  .multiselect {
+    flex: 1 1 100%;
+  }
 }
