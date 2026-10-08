@@ -46,10 +46,10 @@
   --overlay: rgba(10, 16, 12, 0.55);
 
   /* Tipografia */
-  --font-display: "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont,
-    sans-serif;
-  --font-sans: "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont,
-    sans-serif;
+  --font-display:
+    "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans:
+    "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "Geist Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
